@@ -1,0 +1,73 @@
+/*Start Main Rulez */
+body {
+	background-color:#F4F4F4;
+}
+/*End Main Rulez */
+/*Start Login Form */
+
+.login {
+	width:300px;
+	margin:200px auto;
+}
+.login .form-group{
+	position: relative;
+}
+.login input  {
+	margin-bottom:20px;
+}
+.login .form-control {
+	background-color:#EAEAEA;
+	padding: 10px 36px !important;
+
+}
+.login .btn {
+	background-color:#008dde;
+}
+.login .form-group i {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+}
+/*End Login Form */
+
+/* Start NavBar*/
+.navbar {
+	padding:0
+}
+
+.navbar-dark .navbar-brand {
+	font-size:1rem;
+	margin-right:0	
+}
+.navbar-expand-md .navbar-nav .nav-link,
+.navbar-dark .navbar-brand{
+    padding: 1rem;
+}
+.navbar-dark .navbar-nav .active > .nav-link,
+.navbar-dark .navbar-nav .nav-link.active,
+.navbar-dark .navbar-nav .nav-link.show,
+.navbar-dark .navbar-nav .show > .nav-link,
+.navbar-nav .dropdown-menu{
+
+	background-color:#3498db
+}
+.navbar-nav .dropdown-menu  {
+	right: 0;
+	min-width: 14rem;
+	left:-60px !important;
+	padding:0;
+	margin-top:0
+
+
+}
+.dropdown-menu .dropdown-item{
+	color:#FFF;
+	transition: .3s ease-in-out;
+	padding: 7px 10px;
+
+}
+.dropdown-menu .dropdown-item:hover {
+	color:#000;
+	padding:10px 20px;
+}
+/* End NavBar */
