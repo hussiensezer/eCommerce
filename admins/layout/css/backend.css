@@ -71,3 +71,57 @@ body {
 	padding:10px 20px;
 }
 /* End NavBar */
+
+
+/* Start Edit Page*/
+
+h1 {
+	font-family: 'Raleway', sans-serif;
+	font-weight: 900;
+	font-size: 50px;
+	letter-spacing: -3px;
+	color:#757575;
+
+}
+.edit-member {
+	padding-top:70px;
+}
+.contact-form {
+	max-width: 450px;
+	margin: 40px auto;
+}
+.contact-form  .form-group {
+	position: relative;
+}
+.contact-form input,
+.contact-form textarea {
+	margin-bottom:5px;
+	padding: .375rem 2rem !important;
+}
+
+.contact-form textarea {
+	height:180px !important;
+}
+.contact-form  .form-group  i {
+	position: absolute;
+    top: 11px;
+    lefT: 2%;
+	color:#888282;
+
+}
+.contact-form  .form-group  i.fa-paper-plane {
+	color:white;
+}
+.contact-form  .form-group  span.asterisx{
+	position: absolute;
+    top: 2px;
+    right: 5px;
+    color: red;
+    font-size: 25px;
+
+}
+.contact-form .form-group .custom-alert {
+	padding: 5px 10px;
+	display:none;
+}
+/* End Edit Page*/

@@ -33,7 +33,7 @@
           <?php echo $_SESSION['Username']; ?>
         </a>
         <div class="dropdown-menu  " aria-labelledby="navbarDropdown">
-          <a class="dropdown-item" href="members.php"><?php echo lang('EDIT');?></a>
+          <a class="dropdown-item" href="members.php?action=Edit&id=<?php echo $_SESSION['Id']?>"><?php echo lang('EDIT');?></a>
           <a class="dropdown-item" href="#"><?php echo lang('SETTING');?></a>
           <div class="dropdown-divider"></div>
           <a class="dropdown-item" href="logout.php"><?php echo lang('OUT');?></a>

@@ -16,13 +16,26 @@ include "init.php";
 		
 	// Check If The User Exist In DataBase
 
-		$stmt = $con->prepare("SELECT Username, Password FROM users WHERE Username = ? AND Password = ? And GroupId = 1");
-		$stmt->execute(array($user,$hashedPass));
-		$count = $stmt->rowCount();
+		$stmt = $con->prepare("SELECT
+									UserId, Username, Password
+								FROM 
+									users
+								WHERE
+									Username = ?
+								AND 
+									Password = ?
+								And
+									GroupId = 1
+								LIMIT 1");
 		
+		$stmt->execute(array($user,$hashedPass));
+		$row = $stmt->fetch();
+		$count = $stmt->rowCount();
+			//If Count >0 This Mean The DataBase Contain Record About This Username
 		if($count > 0) {
-			$_SESSION['Username'] = $user;
-			header('location: dashboard.php');
+			$_SESSION['Username'] = $user; // Register Session Name
+			$_SESSION['Id'] = $row['UserId']; // Register Session ID
+			header('location: dashboard.php');// Redirect To DashBoard Page
 			exit();
 		}
 	}
