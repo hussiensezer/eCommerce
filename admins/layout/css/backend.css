@@ -71,7 +71,28 @@ body {
 	padding:10px 20px;
 }
 /* End NavBar */
+/*Start Member Page*/
+.main-table {
+	-webkit-box-shadow: 0 1px 7px #ccc;
+	-moz-box-shadow: 0 1px 7px #ccc;
+	-o-box-shadow: 0 1px 7px #ccc;
+	box-shadow: 0 1px 7px #ccc;
+}
+tbody.members {
+	    background-color: #FFF;
 
+}
+.table td, .table th {
+	vertical-align: middle;
+}
+
+.member .btn {
+	padding:3px 7px;
+}
+
+
+
+/*End Member Page*/
 
 /* Start Edit Page*/
 
@@ -83,7 +104,7 @@ h1 {
 	color:#757575;
 
 }
-.edit-member {
+.member {
 	padding-top:70px;
 }
 .contact-form {
@@ -98,10 +119,14 @@ h1 {
 	margin-bottom:5px;
 	padding: .375rem 2rem !important;
 }
-
-.contact-form textarea {
-	height:180px !important;
+.contact-form  .form-group  .asterisk {
+	position: absolute;
+    top: 0px;
+    right: 7px;
+    color: #D20707;
+    font-size: 20px;
 }
+
 .contact-form  .form-group  i {
 	position: absolute;
     top: 11px;
@@ -111,6 +136,14 @@ h1 {
 }
 .contact-form  .form-group  i.fa-paper-plane {
 	color:white;
+}
+.contact-form .form-group i.showpass {
+	right: -30px;
+    left: auto;
+	cursor:pointer;
+}
+.contact-form .form-group i.showpass:hover {
+	color:black;
 }
 .contact-form  .form-group  span.asterisx{
 	position: absolute;
