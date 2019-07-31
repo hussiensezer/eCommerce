@@ -53,7 +53,7 @@ session_start();
 								echo "<td>{$row['Username']} </td>";
 								echo "<td>{$row['Email']} </td>";
 								echo "<td>{$row['FullName']} </td>";
-								echo "<td>3/8/2019</td>";
+								echo "<td>{$row['date']}</td>";
 								echo "<td>
 										<a href='members.php?action=Edit&id={$row['UserId']}' class='btn btn-success'> <i class='fas fa-edit fa-fw mr-1'></i>Edit </a>
 										<a href='members.php?action=Delete&id={$row['UserId']}' class='btn btn-danger confirm'> <i class='fas fa-trash-alt fa-fw mr-1'></i>Delete </a>
@@ -146,7 +146,7 @@ session_start();
 				
 			
 			
-			echo "<div class='container'>";
+			echo "<div class='container member'>";
 			echo '<h1 class="text-center mt-3">Add New Member </h1>' ;
 				//Get Variables From The Form
 				$name = $_POST['username'];
@@ -188,8 +188,8 @@ session_start();
 					if($check == 0) {
 					//Insert The info of user in data DataBase 
 					$stmt = $con->prepare("INSERT INTO
-										   users(Username, Password, Email, FullName)	
-											VALUES(:zuser, :zpass, :zemail, :zname) ");
+										   users(Username, Password, Email, FullName,date)	
+											VALUES(:zuser, :zpass, :zemail, :zname,now()) ");
 					$stmt->execute(array(
 						'zuser' => $name,
 						'zpass' => $hashPass,
@@ -214,7 +214,7 @@ session_start();
 	
 				
 			}else {
-				echo "<div class='container mt-3'>";
+				echo "<div class='container member'>";
 				
 				$theMsg = "<div class='alert alert-danger'><b>Error </b>Sorry You Can't Browse This Page Direcly </div>";
 				redirectHome($theMsg,'back');
@@ -319,7 +319,7 @@ session_start();
 		} elseif($do == 'Update') { //Update Page
 			echo '<h1 class="text-center mt-3">Update Member </h1>' ;
 			
-			echo "<div class='container'>";
+			echo "<div class='container member'>";
 			
 			if($_SERVER['REQUEST_METHOD'] == 'POST') {
 				
@@ -382,23 +382,15 @@ session_start();
 		$userId = isset($_GET['id']) && is_numeric($_GET['id']) ? intval($_GET['id'])  : 0;
 			echo '<h1 class="text-center mt-3">Delete Member </h1>' ;
 			
-			echo "<div class='container'>";
+			echo "<div class='container member'>";
 	
-		// Select All Data Depend On This Id	
-		$stmt = $con->prepare("SELECT * FROM users WHERE UserId = ?LIMIT 1");
+		// Function To Check If The Username Are Exist In Database Or Not To Insert The Member	
 		
-		// Execute Query	
+		$check = checkItem('UserId', 'users', $userId);
+		
 			
-		$stmt->execute(array($userId));
 			
-		// Fetch The Data	
-			
-
-			
-		// The Row Count
-		$count = $stmt->rowCount();
-			
-			if($count > 0) {
+			if($check > 0) {
 				
 				$stmt = $con->prepare("DELETE FROM users WHERE UserId = :userid");
 				

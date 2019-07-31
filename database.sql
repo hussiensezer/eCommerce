@@ -12,4 +12,5 @@ FullName VARCHAR(255) NOT NULL, /*Full Name in Website*/
 GroupId INT(11) DEFAULT 0 , /* Idenify User Group To Check He is User Or Admin*/
 TrustStatus INT(11) DEFAULT 0, /*If The Saller Are good And trusted i can give him spaciel Ranked*/
 RegStatus INT(11) DEFAULT 0, /*User Approved */
+date DATE NOT NULL /* Date The Time User Register */
 )

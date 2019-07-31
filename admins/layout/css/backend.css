@@ -71,6 +71,32 @@ body {
 	padding:10px 20px;
 }
 /* End NavBar */
+
+/* Start Dashboard Page */
+
+.home-stats .stat {
+	background-color:#EEE;
+	border:1px solid #CCC;
+	padding:10px;
+	font-size: 15px;
+}
+.home-stats .stat span {
+	display:block;
+	font-size: 50px;
+}
+
+
+
+
+
+
+
+
+
+/* End Dashboard Page */
+
+
+
 /*Start Member Page*/
 .main-table {
 	-webkit-box-shadow: 0 1px 7px #ccc;
@@ -92,7 +118,7 @@ tbody.members {
 
 
 
-/*End Member Page*/
+
 
 /* Start Edit Page*/
 
@@ -158,3 +184,4 @@ h1 {
 	display:none;
 }
 /* End Edit Page*/
+/*End Member Page*/
