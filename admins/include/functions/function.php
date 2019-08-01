@@ -83,3 +83,46 @@ function countItems($item, $table){
 	
 	return $stmt2->fetchColumn();
 }
+
+
+/*
+**
+**
+**
+*/
+/*function getLatest($select,$from,$orderBy,$type,$limit) {
+	global $con;
+	$return =  '';
+	$stmt3 = $con->prepare("SELECT {$select} FROM {$from} ORDER BY {$orderBy} {$type} LIMIT {$limit} ");
+	$stmt3->execute();
+	$get = $stmt3->fetchAll();
+	foreach($get as $value) {
+		
+		$return .= "<li class='latest-li alert alert-info'> {$value[$select]} </li>";
+	};
+	
+	return	$return;
+}*/
+
+
+
+
+
+
+/*
+** Get Latest Records Function V1.0
+** Function To Get Latest Item From Datebase [user,Item, Comments]
+** $select = Field To Select
+** $table  = The Table To Choose From
+** $orderby = What the Field i'll order by it [ ORDER by UserId, Order By Name ]
+** $limit = Number of Latest i ned to get
+*/
+function getLatest($select,$table,$orderBy,$limit = 5) {
+	global $con;
+	$return =  '';
+	$stmt3 = $con->prepare("SELECT {$select} FROM {$table} ORDER BY {$orderBy} DESC LIMIT {$limit} ");
+	$stmt3->execute();
+	$get = $stmt3->fetchAll();
+
+	return	$get;
+}

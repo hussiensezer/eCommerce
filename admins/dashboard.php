@@ -4,8 +4,8 @@ if(isset($_SESSION['Username'])){
 $pageTitle = "Dashboard";
 include 'init.php';
 /*Start Dashboard Page */
-	
-	
+$latestUser = 5;	
+$latests = getLatest('*','users','UserId',$latestUser);	
 	
 ?>
 	
@@ -18,23 +18,23 @@ include 'init.php';
 		<div class="row mt-5">
 			<!-- Start Stat -->
 			<div class="col-md-3">
-				<div class="stat">
+				<div class="stat st-members">
 					Total Members
-					<span><?php echo countItems('UserId', 'users')?></span>
+					<span><a href="members.php"><?php echo countItems('UserId', 'users')?></a></span>
 				</div>
 			</div>
 			<!-- End Stat -->
 			<!-- Start Stat -->
 			<div class="col-md-3">
-				<div class="stat">
+				<div class="stat st-pending">
 					Pending Members
-					<span>25</span>
+					<span><a href="members.php?action=Manage&status=pending"><?php echo checkItem('RegStatus', 'users', 0)?></a></span>
 				</div>
 			</div>
 			<!-- End Stat -->
 			<!-- Start Stat -->
 			<div class="col-md-3">
-				<div class="stat">
+				<div class="stat st-items">
 					Total Items
 					<span>1500</span>
 				</div>
@@ -42,7 +42,7 @@ include 'init.php';
 			<!-- End Stat -->
 			<!-- Start Stat -->
 			<div class="col-md-3">
-				<div class="stat">
+				<div class="stat st-comments">
 					Total Comments
 					<span>2000</span>
 				</div>
@@ -59,30 +59,34 @@ include 'init.php';
 		<div class="row">
 			<!-- Start Card-Latest -->
 			<div class="col-sm-6">
-				<div class="card text-white bg-primary mb-3">
-				  <div class="card-header"><i class="fas fa-user mr-2"></i>Latest Registerd Users</div>
+				<div class="card text-white  mb-3">
+				  <div class="card-header"><i class="fas fa-user mr-2"></i>Latest <b><?php echo $latestUser ?></b> Registerd Users</div>
 				  <div class="card-body">
-					<h5 class="card-title">Last Five Member</h5>
-					<p class="card-text">Hussien</p>
-					<p class="card-text">Karam</p>
-					<p class="card-text">Rehan</p>
-					<p class="card-text">Mohamed</p>
-					<p class="card-text">Attia</p>
+					<h5 class="card-title">Last  Member</h5>
+					  <ul class="latest-ul">
+						<?php 
+					  	foreach($latests as $user) {
+							
+						echo "<p class='card-text'>{$user['Username']}</p>";
+						}
+
+					  	?>
+					 </ul>
 				  </div>
 				</div>
 			</div>
 		<!-- End Card-Latest -->
 		<!-- Start Card-Latest -->
 			<div class="col-sm-6">
-				<div class="card text-white bg-primary mb-3">
+				<div class="card text-white  mb-3">
 				  <div class="card-header"><i class="fas fa-box mr-2"></i>Latest Items</div>
 				  <div class="card-body">
 					<h5 class="card-title">Last Five Items</h5>
-					<p class="card-text">Tv Samsung Smart</p>
+				<!--	<p class="card-text">Tv Samsung Smart</p>
 					<p class="card-text">Laptop Dell</p>
 					<p class="card-text">Mobile Redmi Not 7</p>
 					<p class="card-text">Shoes Black</p>
-					<p class="card-text">Swim Suit</p>
+					<p class="card-text">Swim Suit</p>-->
 				  </div>
 				</div>
 			</div>

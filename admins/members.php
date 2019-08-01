@@ -19,10 +19,20 @@ session_start();
 		// Start Manage Page
 		if($do == 'Manage'){
 			
-
+			$title = "Management";
+			/* at click in Pedding Member Check if there A Request For Active Fetch 
+				all Date With RegStatus 0 Else Fetch All Date Not Equal The Admin
+			*/
+			$query = '';
+			if(isset($_GET['status']) &&  $_GET['status'] == 'pending'){
+				
+				$query = " AND RegStatus = 0 ";
+				$title = 'Pending';
+			} 
+		
 			//Select All Users Excpet Admin
 			
-			$stmt = $con->prepare("SELECT * FROM users WHERE GroupId != 1");
+			$stmt = $con->prepare("SELECT * FROM users WHERE GroupId != 1 {$query}");
 			
 			//Execute The Statement 
 			$stmt->execute();
@@ -31,7 +41,7 @@ session_start();
 			$rows = $stmt->fetchAll();
 		?>
 	<div class="container member">
-		<h1 class="text-center"> Management Members</h1>			
+		<h1 class="text-center"> <?php echo $title ?> Members</h1>			
 		<a href="members.php?action=Add" class="btn btn-primary mb-2"> <i class="fas fa-plus fa-fw mr-2 "></i> New Member</a>
 		<div class="table-responsive">
 			<table class="table table-bordered text-center main-table">
@@ -56,9 +66,14 @@ session_start();
 								echo "<td>{$row['date']}</td>";
 								echo "<td>
 										<a href='members.php?action=Edit&id={$row['UserId']}' class='btn btn-success'> <i class='fas fa-edit fa-fw mr-1'></i>Edit </a>
-										<a href='members.php?action=Delete&id={$row['UserId']}' class='btn btn-danger confirm'> <i class='fas fa-trash-alt fa-fw mr-1'></i>Delete </a>
+										<a href='members.php?action=Delete&id={$row['UserId']}' class='btn btn-danger confirm'> <i class='fas fa-trash-alt fa-fw mr-1'></i>Delete </a>";
 										
-									</td>";
+									if($row['RegStatus'] == 0) {
+										echo"<a href='members.php?action=active&id={$row['UserId']}' class='btn btn-info  active'> <i class='fas fa-award fa-fw mr-1'></i>Activate </a>";
+
+										}
+							
+								echo "</td>";
 							echo '</tr>';
 						}
 					
@@ -188,8 +203,8 @@ session_start();
 					if($check == 0) {
 					//Insert The info of user in data DataBase 
 					$stmt = $con->prepare("INSERT INTO
-										   users(Username, Password, Email, FullName,date)	
-											VALUES(:zuser, :zpass, :zemail, :zname,now()) ");
+										   users(Username, Password, Email, FullName,RegStatus,date)	
+											VALUES(:zuser, :zpass, :zemail, :zname,1,now()) ");
 					$stmt->execute(array(
 						'zuser' => $name,
 						'zpass' => $hashPass,
@@ -405,7 +420,35 @@ session_start();
 				$theMsg = '<div class="alert alert-danger">This Id Is Not Exist </div>';
 				redirectHome($theMsg);
 			}
-		}//End Elseif Delete Method
+		//End Elseif Delete Method
+		} elseif($do == 'active') {
+				//Check If Get Request userId Is Numeric & Get The Integer Value Of It
+		$userId = isset($_GET['id']) && is_numeric($_GET['id']) ? intval($_GET['id'])  : 0;
+			echo '<h1 class="text-center mt-3">Active Member </h1>' ;
+			
+			echo "<div class='container member'>";
+	
+		// Function To Check If The Username Are Exist In Database Or Not To Insert The Member	
+		
+		$check = checkItem('UserId', 'users', $userId);
+		
+			
+			
+			if($check > 0) {
+				
+				$stmt = $con->prepare("UPDATE  users SET  RegStatus = 1 WHERE UserId = ?");
+				
+			
+				$stmt->execute(array($userId));
+				
+				$theMsg= "<div class='alert alert-success'>" . $stmt->rowCount() . ' Member Are Active Now!</div>';
+				redirectHome($theMsg);
+				echo "</div>";
+			}else {
+				$theMsg = '<div class="alert alert-danger">This Id Is Not Exist </div>';
+				redirectHome($theMsg);
+			}
+		}
 		include $tpl . 'footer_inc.php';
 	} else {
 		header('location:index.php');

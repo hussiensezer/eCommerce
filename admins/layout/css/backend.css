@@ -75,21 +75,46 @@ body {
 /* Start Dashboard Page */
 
 .home-stats .stat {
-	background-color:#EEE;
-	border:1px solid #CCC;
+	color:white;
 	padding:10px;
 	font-size: 15px;
+	border-radius: 10px;
 }
 .home-stats .stat span {
 	display:block;
-	font-size: 50px;
+	font-size: 60px;
+}
+.home-stats .stat span a {
+	color:#FFF;
+	
+}
+.home-stats .stat span a:hover{
+	text-decoration: none;
+}
+.home-stats .st-members {
+	background-color:#3498db; 
+}
+.home-stats .st-pending {
+	background-color:#e74c3c; 
+}
+.home-stats .st-items{
+	background-color:#d35400; 
+}
+.home-stats .st-comments {
+	background-color:#8e44ad; 
 }
 
-
-
-
-
-
+.latest .card {
+	color:black !important;
+}
+.latest .card .latest-ul {
+	list-style:none;
+	padding:0;
+}
+.latest .card .latest-ul li {
+	margin-bottom:5px;
+	text-transform: capitalize;
+}
 
 
 
@@ -132,6 +157,9 @@ h1 {
 }
 .member {
 	padding-top:70px;
+}
+.member .table td a.active {
+	margin-left:4px;
 }
 .contact-form {
 	max-width: 450px;
