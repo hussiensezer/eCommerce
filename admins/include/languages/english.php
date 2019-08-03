@@ -7,7 +7,7 @@ function lang($phrase) {
 		'DASHBOARD' 	 => 'DashBoard',
 		//NavBar Lists
 		'LOGO' 			 => 'Admin Board',
-		'CATEGOTIES'	 => 'Categoties',
+		'CATEGORIES'	 => 'Categories',
 		'HOME' 			 => "Home",
 		'ITEMS'			 => "Items",
 		'MEMBERS'		 => 'Members',

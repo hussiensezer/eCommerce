@@ -67,7 +67,18 @@ $latests = getLatest('*','users','UserId',$latestUser);
 						<?php 
 					  	foreach($latests as $user) {
 							
-						echo "<p class='card-text'>{$user['Username']}</p>";
+						echo "<li class='card-text'>{$user['Username']}";
+							echo"<a href='members.php?action=Edit&id={$user['UserId']}'>";
+								echo"<span class='btn btn-success float-right'>";
+								echo"<i class='fas fa-edit fa-fw'> </i> Edit";
+									
+									echo"</span>";
+								echo"</a>";
+							if($user['RegStatus'] == 0) {
+										echo"<a href='members.php?action=active&id={$user['UserId']}' class='btn btn-info float-right mr-2 active'> <i class='fas fa-award fa-fw mr-1'></i>Activate </a>";
+
+										}
+							echo "</li>";
 						}
 
 					  	?>

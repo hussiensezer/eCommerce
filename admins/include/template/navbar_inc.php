@@ -10,7 +10,7 @@
     <ul class="navbar-nav mr-auto">
 
       <li class="nav-item">
-        <a class="nav-link" href="#"><?php echo lang('CATEGOTIES');?></a>
+        <a class="nav-link" href="category.php"><?php echo lang('CATEGORIES');?></a>
       </li>   
 	  <li class="nav-item">
         <a class="nav-link" href="#"><?php echo lang('ITEMS');?></a>

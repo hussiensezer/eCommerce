@@ -37,6 +37,6 @@ $('input').each(function(){
 //Confirmation Message on Button To Delete
 	$('.confirm').click(function(){
 		
-		return confirm('Are You Sure To Delete Member');
+		return confirm('Are You Sure To Delete ');
 	});
 });

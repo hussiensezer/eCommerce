@@ -110,14 +110,25 @@ body {
 .latest .card .latest-ul {
 	list-style:none;
 	padding:0;
+	margin-bottom:0
 }
 .latest .card .latest-ul li {
-	margin-bottom:5px;
+	padding:8px;
+	overflow: hidden;
 	text-transform: capitalize;
 }
-
-
-
+.latest .card .latest-ul li:nth-child(odd){
+	background-color:#EEE;
+}
+.latest .card .latest-ul li .btn {
+	
+padding: 1px 10px;
+}
+.latest .card .latest-ul li a {
+	color:#FFF;
+	text-decoration: none;
+	
+}
 /* End Dashboard Page */
 
 
@@ -213,3 +224,51 @@ h1 {
 }
 /* End Edit Page*/
 /*End Member Page*/
+
+
+/************ Start Category Page ************/
+/*Start Add Part */
+
+.category-form  .form-group .control-label {
+	padding:0
+}
+.categories .card .ordering a:hover {
+	text-decoration: none;
+}
+.categories .card .ordering .active {
+	color:red;
+	font-weight: bold;
+}
+.categories .cat {
+	margin-bottom:20px;
+	position: relative;
+	overflow: hidden;
+}
+.categories .cat:last-of-type ~ hr {
+	display: none
+}
+.categories .cat .hidden-button {
+	-webkit-transition:all .5s ease-in-out;
+	-moz-transition:all .5s ease-in-out;
+	-o-transition:all .5s ease-in-out;
+	transition:all .5s ease-in-out;
+	position:absolute;
+	top:10px;
+	right:-156px;
+}
+.categories .cat:hover > .hidden-button {
+	right:10px;
+}
+.categories .cat .hidden-button a {
+	padding: 5px;
+	font-size:13px;
+}
+.categories .cat p {
+	margin-bottom:5px;
+}
+.categories .cat a {
+	margin-right:5px;
+}
+
+/*End Add Part */
+/************ End Category Page ************/
