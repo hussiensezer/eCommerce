@@ -6,7 +6,7 @@ include 'init.php';
 /*Start Dashboard Page */
 $latestUser = 5;	
 $latests = getLatest('*','users','UserId',$latestUser);	
-	
+$latestsItems = getLatest('*','items','Item_Id',$latestUser);	
 ?>
 	
 	
@@ -36,7 +36,7 @@ $latests = getLatest('*','users','UserId',$latestUser);
 			<div class="col-md-3">
 				<div class="stat st-items">
 					Total Items
-					<span>1500</span>
+					<span><a href="items.php"><?php echo countItems('Item_Id', 'items')?></a></span>
 				</div>
 			</div>
 			<!-- End Stat -->
@@ -93,11 +93,22 @@ $latests = getLatest('*','users','UserId',$latestUser);
 				  <div class="card-header"><i class="fas fa-box mr-2"></i>Latest Items</div>
 				  <div class="card-body">
 					<h5 class="card-title">Last Five Items</h5>
-				<!--	<p class="card-text">Tv Samsung Smart</p>
-					<p class="card-text">Laptop Dell</p>
-					<p class="card-text">Mobile Redmi Not 7</p>
-					<p class="card-text">Shoes Black</p>
-					<p class="card-text">Swim Suit</p>-->
+		  <ul class="latest-ul">
+						<?php 
+					  	foreach($latestsItems as $item) {
+							
+						echo "<li class='card-text'>{$item['Name']}";
+							echo"<a href='items.php?action=Edit&id={$item['Item_Id']}'>";
+								echo"<span class='btn btn-success float-right'>";
+								echo"<i class='fas fa-edit fa-fw'> </i> Edit";
+									
+									echo"</span>";
+								echo"</a>";
+					
+						}
+
+					  	?>
+					 </ul>
 				  </div>
 				</div>
 			</div>

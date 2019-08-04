@@ -13,7 +13,7 @@
         <a class="nav-link" href="category.php"><?php echo lang('CATEGORIES');?></a>
       </li>   
 	  <li class="nav-item">
-        <a class="nav-link" href="#"><?php echo lang('ITEMS');?></a>
+        <a class="nav-link" href="items.php"><?php echo lang('ITEMS');?></a>
       </li>	
 	 <li class="nav-item">
         <a class="nav-link" href="members.php"><?php echo lang('MEMBERS');?></a>

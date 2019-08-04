@@ -2,7 +2,7 @@
 
 session_start();
 
-$pageTitle = '';
+$pageTitle = 'Category';
 
 if(isset($_SESSION['Username'])) {
 	
