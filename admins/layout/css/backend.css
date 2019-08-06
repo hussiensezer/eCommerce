@@ -79,6 +79,8 @@ body {
 	padding:10px;
 	font-size: 15px;
 	border-radius: 10px;
+	position: relative;
+	overflow: hidden;
 }
 .home-stats .stat span {
 	display:block;
@@ -103,9 +105,25 @@ body {
 .home-stats .st-comments {
 	background-color:#8e44ad; 
 }
-
+.home-stats .stat i {
+	float: left;
+	font-size:70px;
+	position: absolute;
+	top:20%;
+	left:10%;
+}
+.home-stats .stat .info {
+	float:right
+}
 .latest .card {
 	color:black !important;
+}
+.latest .card  .card-header span.toggel-info{
+	color:#999;
+	cursor: pointer;
+}
+.latest .card  .card-header span.toggel-info:hover {
+	color:#333
 }
 .latest .card .latest-ul {
 	list-style:none;
@@ -149,7 +167,7 @@ tbody.members {
 }
 
 .member .btn {
-	padding:3px 7px;
+	padding: 3px 3px;
 }
 
 

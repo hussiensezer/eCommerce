@@ -24,7 +24,22 @@ if(isset($_SESSION['Username'])) {
 			
 		
 			
-			$stmt = $con->prepare("SELECT * FROM items");
+			$stmt = $con->prepare("SELECT 
+									items.*,
+									categories.name
+								AS 
+									category_name,
+									users.Username
+								FROM
+									items 
+								INNER JOIN
+									categories 
+								ON
+									categories.ID = items.Cat_ID 
+								INNER JOIN 
+									users 
+								ON
+									users.UserId = items.Member_ID");
 			
 			//Execute The Statement 
 			$stmt->execute();
@@ -44,10 +59,9 @@ if(isset($_SESSION['Username'])) {
 						<th>Description</th>
 						<th>Price</th>
 						<th>Date</th>
-						<th>Made In</th>
-						<th>Status</th>
-						<th>Cat_ID</th>
-						<th>Member_ID</th>
+						<th>Category</th>
+						<th>Seller</th>
+						<th>Control</th>
 					</tr>
 				</thead>
 				<tbody class="members">
@@ -55,17 +69,19 @@ if(isset($_SESSION['Username'])) {
 						foreach($items as $item){
 							echo '<tr>';
 								echo "<td>{$item['Item_Id']} </td>";
+								echo "<td>{$item['Name']} </td>";
 								echo "<td>{$item['Description']} </td>";
 								echo "<td>{$item['Price']} </td>";
 								echo "<td>{$item['Add_Date']} </td>";
-								echo "<td>{$item['Country_Made']}</td>";
-								echo "<td>{$item['Status']}</td>";
-								echo "<td>{$item['Cat_ID']}</td>";
-								echo "<td>{$item['Member_ID']}</td>";
+								echo "<td>{$item['category_name']}</td>";
+								echo "<td>{$item['Username']}</td>";
 								echo "<td>
 										<a href='items.php?action=Edit&id={$item['Item_Id']}' class='btn btn-success'> <i class='fas fa-edit fa-fw mr-1'></i>Edit </a>
 										<a href='items.php?action=Delete&id={$item['Item_Id']}' class='btn btn-danger confirm'> <i class='fas fa-trash-alt fa-fw mr-1'></i>Delete </a>";
-										
+										if($item['Approve'] == 0) {
+										echo"<a href='items.php?action=Approve&id={$item['Item_Id']}' class='btn btn-info  active'> <i class='fas fa-award fa-fw mr-1'></i>Apporved </a>";
+
+										}
 		
 							
 								echo "</td>";
@@ -277,7 +293,148 @@ if(isset($_SESSION['Username'])) {
 		
 	 // Start Edit Part	
 	}elseif ($do == 'Edit') {
-		echo 'Welcome To Edit';
+			
+		//Check If Get Request ItemId Is Numeric & Get The Integer Value Of It
+		$itemId = isset($_GET['id']) && is_numeric($_GET['id']) ? intval($_GET['id'])  : 0;
+			
+	
+		// Select All Data Depend On This Id	
+		$stmt = $con->prepare("SELECT * FROM items WHERE Item_Id = ? LIMIT 1");
+		
+		// Execute Query	
+			
+		$stmt->execute(array($itemId));
+			
+		// Fetch The Data	
+			
+		$item = $stmt->fetch();
+			
+		// The Row Count
+		$count = $stmt->rowCount();
+			
+			if($count > 0) {
+		?>
+		
+	<!-- Start Form -->
+		<div class="container member">
+		<h1 class="text-center mt-3">Edit Item </h1>
+	
+		<form class="contact-form" action="?action=Update" method="POST">
+			<input type="hidden" name='itemid' value="<?php echo $itemId?>">
+			<!-- Start Of Name -->
+			<div class="form-group">
+				<input type="text"
+					   class="form-control name"
+					   name="name"
+					   placeholder="Name Of The Item"
+					   required="required"
+					   value='<?php echo $item['Name'];?>'>
+				 <i class="fas fa-user fa-fw"></i>
+			</div>
+			<!-- End Of Name -->
+			
+			<!-- Start Of description -->
+			<div class="form-group">
+				<input type="text"
+					   class=" form-control"
+					   name="description" 
+					   placeholder="Describe The Item"
+					   required="required"
+					  value=' <?php echo $item['Description'];?>'>
+				
+				<i class="fas fa-comment-alt fa-fw"></i>
+			</div>
+			<!-- End Of description -->		
+			
+			<!-- Start Of Prices -->
+			<div class="form-group">
+				<input type="text"
+					   class=" form-control"
+					   name="price" 
+					   placeholder="Price The Item"
+					   required="required"
+					   value=' <?php echo $item['Price'];?>'>
+				
+				<i class="fas fa-dollar-sign fa-fw"></i>
+			</div>
+			<!-- End Of Prices -->	
+			
+			
+			<!-- Start Of Prices -->
+			<div class="form-group">
+				<input type="text"
+					   class=" form-control"
+					   name="country" 
+					   placeholder="Country  Of The Item"
+					   value=' <?php echo $item['Country_Made'];?>'>
+				<i class="fas fa-flag"></i>	
+			</div>
+			<!-- End Of Prices -->
+			
+			<!-- Start Of Status -->
+			<div class="form-group">
+				
+					  
+					<select name="status"  class="form-control">
+						<option value='1' <?php if($item['Status'] == 1){echo 'selected';}?>>New</option>
+						<option value='2' <?php if($item['Status'] == 2){echo 'selected';}?>>Like New</option>
+						<option value='3' <?php if($item['Status'] == 3){echo 'selected';}?>>Used</option>
+						<option value='4' <?php if($item['Status'] == 4){echo 'selected';}?>>Old</option>
+					</select>
+				
+			</div>
+			<!-- End Of Status -->
+			<!-- Start Of Member -->
+			<div class="form-group">
+					<select name="member"  class="form-control">
+						<?php
+							$stmt = $con->prepare("SELECT * FROM users WHERE GroupId = 1");
+							$stmt->execute();
+							$users = $stmt->fetchAll();
+							foreach($users as $user) {
+								
+								echo "<option value='{$user['UserId']}' ";
+									if($item['Member_ID'] == $user['UserId']) {echo 'selected';}
+								echo ">" . "{$user['Username']}</option>";
+							}
+						?>
+					</select>
+			</div>
+			<!-- End Of Member -->
+			<!-- Start Of Category -->
+			<div class="form-group">
+					<select name="category"  class="form-control">
+						<?php
+							$stmt = $con->prepare("SELECT * FROM categories");
+							$stmt->execute();
+							$cats = $stmt->fetchAll();
+							foreach($cats as $cat) {
+								
+								echo "<option value='{$cat['ID']}'";
+									if($item['Cat_ID'] == $cat['ID']){echo 'selected';}
+								echo ">{$cat['Name']}</option>";
+							}
+						?>
+					</select>
+			</div>
+			<!-- End Of Category -->
+			
+			<div class="form-group">
+				<input type="submit" class="btn btn-primary " value="Save Item">
+				<i class="fas fa-paper-plane fa-fw"></i>
+			</div>
+			
+		</form>
+	</div>
+	<!-- End Form -->
+
+<?php		//Else Show Error Message
+			}else {
+				
+				$theMsg = "<div class='alert alert-danger'><b>Error </b>This Not A Valid Id  </div>";
+				redirectHome($theMsg,'back');
+				
+			}	
 		
 		
 	 // End Edit Part	
@@ -286,21 +443,127 @@ if(isset($_SESSION['Username'])) {
 	 // Start Update Part
 	}elseif($do == 'Update') {
 		
-		echo 'Welcome To Update';
+		echo '<h1 class="text-center mt-3">Update Item </h1>' ;
+			
+			echo "<div class='container member'>";
+			
+			if($_SERVER['REQUEST_METHOD'] == 'POST') {
+				
+				//Get Variables From The Form
+				
+				$id			 = $_POST['itemid'];
+				$name 		 = $_POST['name'];
+				$desc		 = $_POST['description'];
+				$price		 = $_POST['price'];
+				$country 	 = $_POST['country'];
+				$status 	 = $_POST['status'];
+				$category 	 = $_POST['category'];
+				$member 	 = $_POST['member'];
+				
+				// Validate The Form
+				
+				$formErrors = [];
+				
+						
+				if(empty($name)){
+					$formErrors[] = "Name Of Item's Can't Be <b>Empty</b>";
+				}
+				if(empty($desc)){
+					$formErrors[] = "Description Of Item's Can't Be <b>Empty</b>";
+				}
+				if(empty($price)){
+					$formErrors[] = "Price Can't Be <b>Empty</b>";
+				}
+				
+				foreach($formErrors  as $error) {
+					echo "<div class='alert alert-danger'>" . $error . "</div>";
+				}
+				
+				//Check If There's No Errors In fomErrors Proceed The Update Operation
+				if(empty($formErrors)) {
+					//Update The DataBase With This Info
+					
+					$stmt = $con->prepare("UPDATE items SET Name = ?, Description = ?, Price = ?, Country_Made = ?, Status = ?, Cat_ID = ?, Member_ID = ?  WHERE Item_Id = ?");
+					
+					$stmt->execute(array($name, $desc, $price, $country, $status, $category,$member ,$id));
+					
+					// Echo Success Message
+					$theMsg =  "<div class='alert alert-success'>" . $stmt->rowCount() . ' Record Updated</div>';
+					redirectHome($theMsg,'back');
+				}
+				
+				echo "</div>";
+
+				
+	
+				
+			}else {
+
+				$theMsg = "<div class='alert alert-danger'><b>Error </b>Sorry You Can't Browse This Page Direcly</div>";
+				redirectHome($theMsg);
+			}
 		
 	 // End Update Part
 		
 	 // Start Delete Part
 	} elseif($do == 'Delete') {
 		
-		echo 'Welcome To Delete';
+		$itemId = isset($_GET['id']) && is_numeric($_GET['id']) ? intval($_GET['id']) : 0;
+		
+		// Check the id of item is true and num 
+			echo '<h1 class="text-center mt-3">Delete Member </h1>' ;
+			
+			echo "<div class='container member'>";
+	
+		$check = checkItem('Item_Id', 'items', $itemId);
+		
+		if($check > 0) {
+			
+			$stmt = $con->prepare("DELETE FROM items WHERE Item_Id = :zitem_id");
+			$stmt->bindParam(':zitem_id', $itemId);
+			$stmt->execute();
+			
+			$theMsg= "<div class='alert alert-success'>" . $stmt->rowCount() . ' Member Are Deleted</div>';
+			redirectHome($theMsg);
+			echo "</div>";
+			}else {
+				$theMsg = '<div class="alert alert-danger">This Id Is Not Exist </div>';
+				redirectHome($theMsg);
+			}
+		
+		
 		// End Delete Part
 		
 		
 		// Start Active Part
 	}elseif($do == 'Approve') {
 		
-		echo 'welcome to Approve';
+		//Check If Get Request ItemId Is Numeric & Get The Integer Value Of It
+		$itemId = isset($_GET['id']) && is_numeric($_GET['id']) ? intval($_GET['id'])  : 0;
+			echo '<h1 class="text-center mt-3">Active Member </h1>' ;
+			
+			echo "<div class='container member'>";
+	
+		// Function To Check If The ItemId Are Exist In Database Or Not To Insert The Member	
+		
+		$check = checkItem('Item_Id', 'items', $itemId);
+		
+			
+			
+			if($check > 0) {
+				
+				$stmt = $con->prepare("UPDATE  items SET  Approve = 1 WHERE Item_Id = ?");
+				
+			
+				$stmt->execute(array($itemId));
+				
+				$theMsg= "<div class='alert alert-success'>" . $stmt->rowCount() . ' Item Are Aproved Now!</div>';
+				redirectHome($theMsg, 'back');
+				echo "</div>";
+			}else {
+				$theMsg = '<div class="alert alert-danger">This Id Is Not Exist </div>';
+				redirectHome($theMsg);
+			}
 	}
 	// End Active Part
 

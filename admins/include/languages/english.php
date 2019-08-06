@@ -11,6 +11,7 @@ function lang($phrase) {
 		'HOME' 			 => "Home",
 		'ITEMS'			 => "Items",
 		'MEMBERS'		 => 'Members',
+		'COMMENTS'		 => 'Comments',
 		'STATISTIC'		 => 'Statistics',
 		'LOGS'			 => 'Logs',
 		'EDIT'			 => 'Edit Profile',

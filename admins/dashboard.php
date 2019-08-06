@@ -19,32 +19,45 @@ $latestsItems = getLatest('*','items','Item_Id',$latestUser);
 			<!-- Start Stat -->
 			<div class="col-md-3">
 				<div class="stat st-members">
-					Total Members
-					<span><a href="members.php"><?php echo countItems('UserId', 'users')?></a></span>
+					<i class="fas fa-users fa-fw"></i>
+					<div class="info">
+						Total Members
+						<span><a href="members.php"><?php echo countItems('UserId', 'users')?></a></span>
+					</div>
 				</div>
 			</div>
 			<!-- End Stat -->
 			<!-- Start Stat -->
 			<div class="col-md-3">
 				<div class="stat st-pending">
+					<i class="fas fa-user-plus fa-fw"></i>
+					<div class="info">
 					Pending Members
 					<span><a href="members.php?action=Manage&status=pending"><?php echo checkItem('RegStatus', 'users', 0)?></a></span>
+					</div>
 				</div>
 			</div>
 			<!-- End Stat -->
 			<!-- Start Stat -->
 			<div class="col-md-3">
+		
 				<div class="stat st-items">
+					<i class="fas fa-tags fa-fw"></i>
+					<div class="info">
 					Total Items
 					<span><a href="items.php"><?php echo countItems('Item_Id', 'items')?></a></span>
+					</div>
 				</div>
 			</div>
 			<!-- End Stat -->
 			<!-- Start Stat -->
 			<div class="col-md-3">
 				<div class="stat st-comments">
+					<div class="info">
+					<i class="fas fa-comments fa-fw"></i>
 					Total Comments
 					<span>2000</span>
+					</div>
 				</div>
 			</div>
 			<!-- End Stat -->
@@ -60,7 +73,13 @@ $latestsItems = getLatest('*','items','Item_Id',$latestUser);
 			<!-- Start Card-Latest -->
 			<div class="col-sm-6">
 				<div class="card text-white  mb-3">
-				  <div class="card-header"><i class="fas fa-user mr-2"></i>Latest <b><?php echo $latestUser ?></b> Registerd Users</div>
+				  <div class="card-header">
+					  <i class="fas fa-user mr-2"></i>Latest
+					  <b><?php echo $latestUser ?></b> Registerd Users
+					  <span class="toggel-info float-right">
+					  	<i class="fas fa-minus fa-lg"></i>
+					  </span>
+					</div>
 				  <div class="card-body">
 					<h5 class="card-title">Last  Member</h5>
 					  <ul class="latest-ul">
@@ -90,10 +109,15 @@ $latestsItems = getLatest('*','items','Item_Id',$latestUser);
 		<!-- Start Card-Latest -->
 			<div class="col-sm-6">
 				<div class="card text-white  mb-3">
-				  <div class="card-header"><i class="fas fa-box mr-2"></i>Latest Items</div>
+				  <div class="card-header">
+					  <i class="fas fa-box mr-2"></i>Latest Items
+						  <span class="toggel-info float-right">
+							  	<i class="fas fa-minus fa-lg"></i>
+						  </span>
+					</div>
 				  <div class="card-body">
 					<h5 class="card-title">Last Five Items</h5>
-		  <ul class="latest-ul">
+		  		<ul class="latest-ul">
 						<?php 
 					  	foreach($latestsItems as $item) {
 							
@@ -104,6 +128,11 @@ $latestsItems = getLatest('*','items','Item_Id',$latestUser);
 									
 									echo"</span>";
 								echo"</a>";
+							
+							if($item['Approve'] == 0) {
+								echo"<a href='items.php?action=Approve&id={$item['Item_Id']}' class='btn btn-info  float-right mr-2 active'> ";
+								echo "<i class='fas fa-award fa-fw mr-1'></i>Apporved </a>";
+							}
 					
 						}
 

@@ -1,6 +1,22 @@
 $(function(){
 	'use strict';
 	
+	
+	// DashBoard 
+	
+	$('.toggel-info').click(function(){
+		
+		$(this).toggleClass('selected').parent().next('.card-body').fadeToggle(100);
+		
+		if($(this).hasClass('selected')) {
+			$(this).html('<i class="fas fa-plus fa-lg"></i>');
+		}else {
+			$(this).html('<i class="fas fa-minus fa-lg"></i>');
+		}
+		
+	});
+	
+	
 	//Hide PlaceHolder On Form Fouces
 	$('[placeholder]').focus(function(){
 		$(this).attr('data-text',$(this).attr('placeholder'));
