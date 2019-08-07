@@ -5,8 +5,29 @@ $pageTitle = "Dashboard";
 include 'init.php';
 /*Start Dashboard Page */
 $latestUser = 5;	
-$latests = getLatest('*','users','UserId',$latestUser);	
+$latests = getLatest('*','users','UserId',$latestUser, 'GroupId != 1');	
 $latestsItems = getLatest('*','items','Item_Id',$latestUser);	
+$latestscomments = getLatest('*','comments','c_id',$latestUser);
+	
+	
+$stmt = $con->prepare("SELECT
+						comments.*, users.Username
+					FROM
+						comments
+
+					INNER JOIN
+						users
+					ON
+						users.UserId = comments.user_id
+					ORDER BY
+						c_id DESC
+				");
+			
+	//Execute The Statement 
+	$stmt->execute(array());
+
+	//Assign To Variable
+	$comments = $stmt->fetchAll();
 ?>
 	
 	
@@ -56,7 +77,7 @@ $latestsItems = getLatest('*','items','Item_Id',$latestUser);
 					<div class="info">
 					<i class="fas fa-comments fa-fw"></i>
 					Total Comments
-					<span>2000</span>
+					<span><a href="comments.php"><?php echo countItems('c_id', 'comments')?></a></span>
 					</div>
 				</div>
 			</div>
@@ -74,13 +95,14 @@ $latestsItems = getLatest('*','items','Item_Id',$latestUser);
 			<div class="col-sm-6">
 				<div class="card text-white  mb-3">
 				  <div class="card-header">
-					  <i class="fas fa-user mr-2"></i>Latest
-					  <b><?php echo $latestUser ?></b> Registerd Users
+					  <i class="fas fa-user mr-2"></i>Latest Registerd Users
 					  <span class="toggel-info float-right">
 					  	<i class="fas fa-minus fa-lg"></i>
 					  </span>
 					</div>
 				  <div class="card-body">
+					   <?php if(!empty($latests)){?>
+
 					<h5 class="card-title">Last  Member</h5>
 					  <ul class="latest-ul">
 						<?php 
@@ -99,7 +121,9 @@ $latestsItems = getLatest('*','items','Item_Id',$latestUser);
 										}
 							echo "</li>";
 						}
-
+						}else {
+							echo "No Member's";
+						}	
 					  	?>
 					 </ul>
 				  </div>
@@ -116,6 +140,7 @@ $latestsItems = getLatest('*','items','Item_Id',$latestUser);
 						  </span>
 					</div>
 				  <div class="card-body">
+					   <?php if(!empty($latestsItems)){?>
 					<h5 class="card-title">Last Five Items</h5>
 		  		<ul class="latest-ul">
 						<?php 
@@ -135,13 +160,46 @@ $latestsItems = getLatest('*','items','Item_Id',$latestUser);
 							}
 					
 						}
-
+						} else {
+							echo "No Item's";
+						}
 					  	?>
 					 </ul>
 				  </div>
 				</div>
 			</div>
 		<!-- End Card-Latest -->
+		<!-- Start Card-Latest -->
+			<div class="col-sm-6">
+				<div class="card text-white  mb-3">
+				  <div class="card-header">
+					  <i class="fas fa-box mr-2"></i>Latest Comment
+						  <span class="toggel-info float-right">
+							  	<i class="fas fa-minus fa-lg"></i>
+						  </span>
+					</div>
+				  <div class="card-body">
+					 <?php if(!empty($comments)){?>
+					<h5 class="card-title">Last Comments</h5>
+		  	
+						<?php 
+						
+					  	foreach($comments as $comment) {
+							echo"<div class='comment-box row'>";
+								echo "<span class='card-text member-n col-md-3 '>{$comment['Username']} </span>";
+								echo "<p class='member-c col-md-9 '>{$comment['comment']} </p>";
+							echo"</div>";
+							
+						}
+						}else {
+							echo "No Comment's";
+						}	
+					  	?>
+					
+				  </div>
+				</div>
+			</div>	
+			
 		</div>
 	</div>
 </div>	

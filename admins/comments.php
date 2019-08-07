@@ -23,7 +23,7 @@ session_start();
 			
 		
 		
-			//Select All Users Excpet Admin
+	
 				// AS Hna fe al QUERY 3LSHN a8yar asm al items.name 3lshn mesh mfhoma nam eh
 			$stmt = $con->prepare("SELECT
 										comments.*, items.name AS Item_Name, users.Username
@@ -37,6 +37,8 @@ session_start();
 										users
 									ON
 										users.UserId = comments.user_id
+									ORDER BY
+										c_id DESC
 								");
 			
 			//Execute The Statement 
@@ -44,6 +46,7 @@ session_start();
 			
 			//Assign To Variable
 			$comments = $stmt->fetchAll();
+			if(!empty($comments)){
 		?>
 	<div class="container member">
 		<h1 class="text-center mb-3"> <?php echo $title ?> Comments</h1>			
@@ -86,19 +89,28 @@ session_start();
 			</table>
 		</div>
 	</div>
+		<?php 
+			}else{
+				echo '<div class="container">';
+					echo'<div class="nice-message">'. ' Theres No Comment To Show'. '</div>';;
+								
+					
+				echo '</div>';
+			}?>
+	
 	<?php
 		} elseif($do == 'Edit'){ //Edit Page 
 			
 		//Check If Get Request userId Is Numeric & Get The Integer Value Of It
-		$userId = isset($_GET['id']) && is_numeric($_GET['id']) ? intval($_GET['id'])  : 0;
+		$commentId = isset($_GET['id']) && is_numeric($_GET['id']) ? intval($_GET['id'])  : 0;
 			
 	
 		// Select All Data Depend On This Id	
-		$stmt = $con->prepare("SELECT * FROM users WHERE UserId = ?LIMIT 1");
+		$stmt = $con->prepare("SELECT * FROM comments WHERE c_id = ? LIMIT 1");
 		
 		// Execute Query	
 			
-		$stmt->execute(array($userId));
+		$stmt->execute(array($commentId));
 			
 		// Fetch The Data	
 			
@@ -112,61 +124,22 @@ session_start();
 		
 			<!-- Start Form -->
 	<div class="container member">
-		<h1 class="text-center mt-3">Edit Member </h1>
+		<h1 class="text-center mt-3">Edit Comment </h1>
 	
 		<form class="contact-form" action="?action=Update" method="POST">
-			<input type="hidden" name="userid" value="<?php echo $userId?>"/>
+			<input type="hidden" name="commentid" value="<?php echo $commentId?>"/>
 			<div class="form-group">
-				<input type="text"
-					   class="form-control username"
-					   name="username"
-					   placeholder="Type Your UserName"
-					   autocomplete=off
-					   value="<?php echo $row['Username']?>"
-					   required='required'>
-				<i class="fas fa-user fa-fw"></i>
-			
-
-			</div>
-			<div class="form-group">
-				<input type="hidden" name="oldpassword" value="<?php echo $row['Password']?>">
-				<input type="password"
-					   class="form-control"
-					   name="newpassword" 
-					   placeholder="Leave It Blank If You Won't Change Your Password"
-					   autocomplete = "new-password">
-				<i class="fas fa-lock fa-fw"></i>
-
+				<textarea class="form-control username"name="comment" placeholder=" Write Your Comment" autocomplete="off" required='required'><?php echo $row['comment']?></textarea>
 			</div>
 			
-			<div class="form-group">
-				<input type="email"
-					   class="email form-control"
-					   name="email"
-					   placeholder="Please Type A Valid Email"
-					   autocomplete=off
-					   value="<?php echo $row['Email']?>"
-					   required='required'>
-				<i class="fas fa-envelope fa-fw"></i>
-				
-			</div>
-			
-			<div class="form-group">
-			<input type="text"
-					   class="email form-control"
-					   name="fullname"
-					   placeholder="Please Type Your Full Name"
-				   	 autocomplete=off
-				   value="<?php echo $row['FullName']?>"
-				   required='required'>
-				<i class="fas fa-signature fa-fw"></i>
-			</div>
 			<div class="form-group">
 				<input type="submit" class="btn btn-success " value="Update">
 				<i class="fas fa-paper-plane fa-fw"></i>
 			</div>
 			
 		</form>
+		
+		
 	</div>
 	<!-- End Form -->
 
@@ -188,27 +161,19 @@ session_start();
 				
 				//Get Variables From The Form
 				
-				$id = $_POST['userid'];
-				$name = $_POST['username'];
-				$email = $_POST['email'];
-				$full = $_POST['fullname'];
+				$id = $_POST['commentid'];
+				$comment = $_POST['comment'];
+
 				
-				// Password Trick
-				$pass = empty($_POST['newpassword']) ? $_POST['oldpassword'] : sha1($_POST['newpassword']);
 				
 				// Validate The Form
 				
 				$formErrors = [];
 				
-				if(empty($name)){
-					$formErrors[] = "Username Can't Be <b>Empty</b>";
+				if(empty($comment)){
+					$formErrors[] = "Comment Can't Be <b>Empty</b>";
 				}
-				if(empty($email)){
-					$formErrors[] = "Email Can't Be <b>Empty</b>";
-				}
-				if(empty($full)){
-					$formErrors[] = "Full Name Can't Be <b>Empty</b>";
-				}
+			
 
 				
 				foreach($formErrors  as $error) {
@@ -219,9 +184,9 @@ session_start();
 				if(empty($formErrors)) {
 					//Update The DataBase With This Info
 					
-					$stmt = $con->prepare("UPDATE users SET Username = ?, Password = ?, Email = ?, FullName = ? WHERE UserId = ?");
+					$stmt = $con->prepare("UPDATE comments SET comment = ? WHERE c_id = ?");
 					
-					$stmt->execute(array($name, $pass, $email, $full, $id));
+					$stmt->execute(array($comment,$id));
 					
 					// Echo Success Message
 					$theMsg =  "<div class='alert alert-success'>" . $stmt->rowCount() . ' Record Updated</div>';
@@ -242,27 +207,27 @@ session_start();
 		}elseif($do == 'Delete'){ //Delete Page
 					
 		//Check If Get Request userId Is Numeric & Get The Integer Value Of It
-		$userId = isset($_GET['id']) && is_numeric($_GET['id']) ? intval($_GET['id'])  : 0;
+		$commetid = isset($_GET['id']) && is_numeric($_GET['id']) ? intval($_GET['id'])  : 0;
 			echo '<h1 class="text-center mt-3">Delete Member </h1>' ;
 			
 			echo "<div class='container member'>";
 	
 		// Function To Check If The Username Are Exist In Database Or Not To Insert The Member	
 		
-		$check = checkItem('UserId', 'users', $userId);
+		$check = checkItem('c_id', 'comments', $commetid);
 		
 			
 			
 			if($check > 0) {
 				
-				$stmt = $con->prepare("DELETE FROM users WHERE UserId = :userid");
+				$stmt = $con->prepare("DELETE FROM comments WHERE c_id = :id");
 				
 				// Other Way To Execute The Statment
-				$stmt->bindParam(':userid' , $userId);
+				$stmt->bindParam(':id' , $commetid);
 				$stmt->execute();
 				
-				$theMsg= "<div class='alert alert-success'>" . $stmt->rowCount() . ' Member Are Deleted</div>';
-				redirectHome($theMsg);
+				$theMsg= "<div class='alert alert-success'>" . $stmt->rowCount() . ' Comment Are Deleted</div>';
+				redirectHome($theMsg, 'back');
 				echo "</div>";
 			}else {
 				$theMsg = '<div class="alert alert-danger">This Id Is Not Exist </div>';
@@ -271,26 +236,26 @@ session_start();
 		//End Elseif Delete Method
 		} elseif($do == 'approve') {
 		//Check If Get Request userId Is Numeric & Get The Integer Value Of It
-		$userId = isset($_GET['id']) && is_numeric($_GET['id']) ? intval($_GET['id'])  : 0;
+		$commentId = isset($_GET['id']) && is_numeric($_GET['id']) ? intval($_GET['id'])  : 0;
 			echo '<h1 class="text-center mt-3">Active Member </h1>' ;
 			
 			echo "<div class='container member'>";
 	
 		// Function To Check If The Username Are Exist In Database Or Not To Insert The Member	
 		
-		$check = checkItem('UserId', 'users', $userId);
+		$check = checkItem('c_id', 'comments', $commentId);
 		
 			
 			
 			if($check > 0) {
 				
-				$stmt = $con->prepare("UPDATE  users SET  RegStatus = 1 WHERE UserId = ?");
+				$stmt = $con->prepare("UPDATE  comments SET  status = 1 WHERE c_id = ?");
 				
 			
-				$stmt->execute(array($userId));
+				$stmt->execute(array($commentId));
 				
-				$theMsg= "<div class='alert alert-success'>" . $stmt->rowCount() . ' Member Are Active Now!</div>';
-				redirectHome($theMsg);
+				$theMsg= "<div class='alert alert-success'>" . $stmt->rowCount() . ' Member Are Approveds Now!</div>';
+				redirectHome($theMsg, 'back');
 				echo "</div>";
 			}else {
 				$theMsg = '<div class="alert alert-danger">This Id Is Not Exist </div>';

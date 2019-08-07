@@ -23,6 +23,7 @@ if(isset($_SESSION['Username'])) {
 		$stmt->execute();
 		
 		$cats = $stmt->fetchAll();
+		if(!empty($cats)){
 
  ?>
 		<div class="container categories">
@@ -97,7 +98,14 @@ if(isset($_SESSION['Username'])) {
 			</div>
 		</div>
 		
-		
+	<?php 
+	}else{
+		echo '<div class="container">';
+			echo'<div class="nice-message">'. ' Theres No Category To Show'. '</div>';
+			echo '<a href="category.php?action=Add" class="btn btn-primary mb-2"> <i class="fas fa-plus fa-fw mr-2 "></i> Add Category</a>';
+
+		echo '</div>';
+	}?>	
 	 
 		
 	<?php

@@ -39,17 +39,20 @@ if(isset($_SESSION['Username'])) {
 								INNER JOIN 
 									users 
 								ON
-									users.UserId = items.Member_ID");
+									users.UserId = items.Member_ID
+								ORDER BY
+									Item_Id DESC");
 			
 			//Execute The Statement 
 			$stmt->execute();
 			
 			//Assign To Variable
 			$items = $stmt->fetchAll();
+			if(!empty($items)){
 		?>
 	<div class="container member">
 		<h1 class="text-center"> <?php echo $title ?> Items</h1>			
-		<a href="items.php?action=Add" class="btn btn-primary mb-2"> <i class="fas fa-plus fa-fw mr-2 "></i> New Member</a>
+		<a href="items.php?action=Add" class="btn btn-primary mb-2"> <i class="fas fa-plus fa-fw mr-2 "></i> Add Item</a>
 		<div class="table-responsive">
 			<table class="table table-bordered text-center main-table">
 				<thead class="thead-dark">
@@ -93,7 +96,15 @@ if(isset($_SESSION['Username'])) {
 			</table>
 		</div>
 	</div>
-		
+	<?php 
+		}else{
+			echo '<div class="container">';
+				echo'<div class="nice-message">'. ' Theres No Item To Show'. '</div>';
+				echo '<a href="items.php?action=Add" class="btn btn-primary mb-2"> <i class="fas fa-plus fa-fw mr-2 "></i> Add Item</a>';
+
+			echo '</div>';
+	}?>
+
 <?php		
 	 // Start Add Part
 	} elseif($do == 'Add') {?>
@@ -425,6 +436,66 @@ if(isset($_SESSION['Username'])) {
 			</div>
 			
 		</form>
+		<?php	$stmt = $con->prepare("SELECT
+										comments.*, users.Username
+									FROM
+										comments
+									
+									INNER JOIN
+										users
+									ON
+										users.UserId = comments.user_id
+									WHERE item_id = ? 
+								");
+			
+			//Execute The Statement 
+			$stmt->execute(array($itemId));
+			
+			//Assign To Variable
+			$comments = $stmt->fetchAll();
+			if(!empty($comments)){
+		?>
+
+		<h1 class="text-center mb-3"> Mangement [ <?php echo $item['Name']; ?> ] Comments</h1>			
+		<div class="table-responsive">
+			<table class="table table-bordered text-center main-table">
+				<thead class="thead-dark">
+					<tr>
+						<th>Comment</th>
+						<th>User Name</th>
+						<th>Add Date</th>
+						<th>Control</th>
+					</tr>
+				</thead>
+				<tbody class="members">
+					<?php 
+						foreach($comments as $comment){
+							echo '<tr>';
+								echo "<td>{$comment['comment']} </td>";
+								echo "<td>{$comment['Username']} </td>";
+								echo "<td>{$comment['comment_date']}</td>";
+								echo "<td>
+										<a href='comments.php?action=Edit&id={$comment['c_id']}' class='btn btn-success'> <i class='fas fa-edit fa-fw mr-1'></i>Edit </a>
+										<a href='comments.php?action=Delete&id={$comment['c_id']}' class='btn btn-danger confirm'> <i class='fas fa-trash-alt fa-fw mr-1'></i>Delete </a>";
+										
+									if($comment['status'] == 0) {
+										echo"<a href='comments.php?action=approve&id={$comment['c_id']}' class='btn btn-info  active'> <i class='fas fa-award fa-fw mr-1'></i>Approve </a>";
+
+										}
+							
+								echo "</td>";
+							echo '</tr>';
+						}
+					
+					?>
+				</tbody>
+			</table>
+		</div>
+		<?php }else {echo "<p class='alert alert-info w-25  alert-dismissible fade show role='alert'>
+								<button type='button' class='close' data-dismiss='alert' aria-label='Close'>
+								<span aria-hidden='true'>&times;</span>
+								</button><b>No Comment's</b>
+							</p>";}?>
 	</div>
 	<!-- End Form -->
 
@@ -523,8 +594,8 @@ if(isset($_SESSION['Username'])) {
 			$stmt->bindParam(':zitem_id', $itemId);
 			$stmt->execute();
 			
-			$theMsg= "<div class='alert alert-success'>" . $stmt->rowCount() . ' Member Are Deleted</div>';
-			redirectHome($theMsg);
+			$theMsg= "<div class='alert alert-success'>" . $stmt->rowCount() . ' Item Are Deleted</div>';
+			redirectHome($theMsg,'back');
 			echo "</div>";
 			}else {
 				$theMsg = '<div class="alert alert-danger">This Id Is Not Exist </div>';

@@ -110,17 +110,18 @@ function countItems($item, $table){
 
 
 /*
-** Get Latest Records Function V1.0
+** Get Latest Records Function V2.0 {We Add Where Condition}
 ** Function To Get Latest Item From Datebase [user,Item, Comments]
 ** $select = Field To Select
 ** $table  = The Table To Choose From
 ** $orderby = What the Field i'll order by it [ ORDER by UserId, Order By Name ]
 ** $limit = Number of Latest i ned to get
+** $WHERE = if u have a condition like GroupId != 0 if u dont have a coniditon leave it empty it's will take a default value 1
 */
-function getLatest($select,$table,$orderBy,$limit = 5) {
+function getLatest($select, $table, $orderBy, $limit = 5 , $WHERE = 1 ) {
 	global $con;
 	$return =  '';
-	$stmt3 = $con->prepare("SELECT {$select} FROM {$table} ORDER BY {$orderBy} DESC LIMIT {$limit} ");
+	$stmt3 = $con->prepare("SELECT {$select} FROM {$table}  WHERE {$WHERE} ORDER BY {$orderBy} DESC   LIMIT {$limit} ");
 	$stmt3->execute();
 	$get = $stmt3->fetchAll();
 

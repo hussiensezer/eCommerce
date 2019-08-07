@@ -32,17 +32,18 @@ session_start();
 		
 			//Select All Users Excpet Admin
 			
-			$stmt = $con->prepare("SELECT * FROM users WHERE GroupId != 1 {$query}");
+			$stmt = $con->prepare("SELECT * FROM users WHERE GroupId != 1 {$query} ORDER BY UserId DESC");
 			
 			//Execute The Statement 
 			$stmt->execute();
 			
 			//Assign To Variable
-			$rows = $stmt->fetchAll();
+			$members = $stmt->fetchAll();
+			if(!empty($members)){
 		?>
 	<div class="container member">
 		<h1 class="text-center"> <?php echo $title ?> Members</h1>			
-		<a href="members.php?action=Add" class="btn btn-primary mb-2"> <i class="fas fa-plus fa-fw mr-2 "></i> New Member</a>
+		<a href="members.php?action=Add" class="btn btn-primary mb-2"> <i class="fas fa-plus fa-fw mr-2 "></i> Add Member</a>
 		<div class="table-responsive">
 			<table class="table table-bordered text-center main-table">
 				<thead class="thead-dark">
@@ -57,19 +58,19 @@ session_start();
 				</thead>
 				<tbody class="members">
 					<?php 
-						foreach($rows as $row){
+						foreach($members as $member){
 							echo '<tr>';
-								echo "<td>{$row['UserId']} </td>";
-								echo "<td>{$row['Username']} </td>";
-								echo "<td>{$row['Email']} </td>";
-								echo "<td>{$row['FullName']} </td>";
-								echo "<td>{$row['date']}</td>";
+								echo "<td>{$member['UserId']} </td>";
+								echo "<td>{$member['Username']} </td>";
+								echo "<td>{$member['Email']} </td>";
+								echo "<td>{$member['FullName']} </td>";
+								echo "<td>{$member['date']}</td>";
 								echo "<td>
-										<a href='members.php?action=Edit&id={$row['UserId']}' class='btn btn-success'> <i class='fas fa-edit fa-fw mr-1'></i>Edit </a>
-										<a href='members.php?action=Delete&id={$row['UserId']}' class='btn btn-danger confirm'> <i class='fas fa-trash-alt fa-fw mr-1'></i>Delete </a>";
+										<a href='members.php?action=Edit&id={$member['UserId']}' class='btn btn-success'> <i class='fas fa-edit fa-fw mr-1'></i>Edit </a>
+										<a href='members.php?action=Delete&id={$member['UserId']}' class='btn btn-danger confirm'> <i class='fas fa-trash-alt fa-fw mr-1'></i>Delete </a>";
 										
-									if($row['RegStatus'] == 0) {
-										echo"<a href='members.php?action=active&id={$row['UserId']}' class='btn btn-info  active'> <i class='fas fa-award fa-fw mr-1'></i>Activate </a>";
+									if($member['RegStatus'] == 0) {
+										echo"<a href='members.php?action=active&id={$member['UserId']}' class='btn btn-info  active'> <i class='fas fa-award fa-fw mr-1'></i>Activate </a>";
 
 										}
 							
@@ -82,6 +83,15 @@ session_start();
 			</table>
 		</div>
 	</div>
+	<?php 
+		}else{
+			echo '<div class="container">';
+				echo'<div class="nice-message">'. ' Theres No Member To Show'. '</div>';
+				echo '<a href="members.php?action=Add" class="btn btn-primary mb-2"> <i class="fas fa-plus fa-fw mr-2 "></i> Add Member</a>';
+
+			echo '</div>';
+		}?>
+
 	<?php
 		}elseif($do == 'Add') { //Add Member Page ?>
 			
@@ -369,6 +379,22 @@ session_start();
 				
 				//Check If There's No Errors In fomErrors Proceed The Update Operation
 				if(empty($formErrors)) {
+					
+					$stmt2 = $con->prepare("SELECT
+										*
+									FROM
+										users
+									WHERE
+										Username = ?
+									AND 
+										UserId != ? ");
+					$stmt2->execute(array($name, $id));
+					$count = $stmt2->rowCount();
+					
+					if($count == 1) {
+							$theMsg =  "<div class='alert alert-danger'>" . 'Sorry This Name Exits' . ' </div>';
+							redirectHome($theMsg,'back');			
+					}else {
 					//Update The DataBase With This Info
 					
 					$stmt = $con->prepare("UPDATE users SET Username = ?, Password = ?, Email = ?, FullName = ? WHERE UserId = ?");
@@ -378,6 +404,7 @@ session_start();
 					// Echo Success Message
 					$theMsg =  "<div class='alert alert-success'>" . $stmt->rowCount() . ' Record Updated</div>';
 					redirectHome($theMsg,'back');
+					}
 				}
 				
 				echo "</div>";
@@ -414,7 +441,7 @@ session_start();
 				$stmt->execute();
 				
 				$theMsg= "<div class='alert alert-success'>" . $stmt->rowCount() . ' Member Are Deleted</div>';
-				redirectHome($theMsg);
+				redirectHome($theMsg, 'back');
 				echo "</div>";
 			}else {
 				$theMsg = '<div class="alert alert-danger">This Id Is Not Exist </div>';
@@ -442,7 +469,7 @@ session_start();
 				$stmt->execute(array($userId));
 				
 				$theMsg= "<div class='alert alert-success'>" . $stmt->rowCount() . ' Member Are Active Now!</div>';
-				redirectHome($theMsg);
+				redirectHome($theMsg, 'back');
 				echo "</div>";
 			}else {
 				$theMsg = '<div class="alert alert-danger">This Id Is Not Exist </div>';

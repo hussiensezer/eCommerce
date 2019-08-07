@@ -2,6 +2,14 @@
 body {
 	background-color:#F4F4F4;
 }
+.nice-message {
+	background-color:#FFF;
+	padding:20px;
+	margin:30px 0 20px ;
+	font-size: 25px;
+	border-left: 7px solid #080;
+	
+}
 /*End Main Rulez */
 /*Start Login Form */
 
@@ -146,6 +154,30 @@ padding: 1px 10px;
 	color:#FFF;
 	text-decoration: none;
 	
+}
+.latest .card .comment-box {
+	margin-top:5px 0 10px;
+}
+.latest .card .comment-box .member-n {
+	text-align: center;
+	padding: 15px;
+}
+.latest .card .comment-box .member-c {
+	background-color:#EFEFEF;
+	padding: 20px;
+	border-radius: 10px;
+	position: relative
+}
+.latest .card .comment-box .member-c::before {
+	content: '';
+	position:absolute;
+	top:12%;
+	left:-7.3%;
+	border-style: solid;
+	border-width:15px;
+	border-color:transparent #EFEFEF transparent transparent;
+	
+	display: block;
 }
 /* End Dashboard Page */
 
