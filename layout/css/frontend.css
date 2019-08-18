@@ -65,5 +65,42 @@ h1 {
 }
 /* End NavBar */
 
+/* Start Login Page */
+.form-container {
+	max-width:300px;
+	margin:10px auto;
+}
+.form h1 {
+	margin-bottom:48px
+}
+.form h1 span {
+	cursor:pointer;
+}
+.form [data-class="login"].active {
+	color:#007bff
+}
+.form [data-class="signup"].active {
+	color:#5cb85c;
+}
+.form span {
+	color:#cecece;
+}
+.form .signup {
+	display:none;
+}
+ .form-group {
+	position: relative;
+}
 
-
+ .form-group  .asterisk {
+	position: absolute;
+    top: 0px;
+    right: 7px;
+    color: #D20707;
+    font-size: 20px;
+}
+.form-errors .errors {
+    width:43%;
+    margin:10px auto;
+}
+/* End Login Page */

@@ -14,22 +14,53 @@ function getCat() {
 }
 
 
+/*
+** Check if User Is Not Activated
+** Funtion To Check The RegStatus Of The User
+*/
 
-
+function checkUserStatus($user){
+	global $con;
+			$stmt = $con->prepare("SELECT
+									 Username
+								FROM 
+									users
+								WHERE
+									Username = ?
+								AND 
+								RegStatus = 0");
+		
+		$stmt->execute(array($user));
+		$status = $stmt->rowCount();
+	return $status;
+}
 
 /*
-** Get  Items Function 1.0 
+** Get  Items The Approved Item Only Function 1.0 
 ** Function To Get Categories From Datebase 
 */
-function getItems($catId) {
+function getItems($where, $value) {
 	global $con;
-	$getItems = $con->prepare("SELECT * FROM items WHERE Cat_ID = ? AND Approve = 1 ORDER BY Item_Id DESC");
-	$getItems->execute(array($catId));
+	$getItems = $con->prepare("SELECT * FROM items WHERE $where = ? AND Approve = 1 ORDER BY Item_Id DESC");
+	$getItems->execute(array($value));
 	$items = $getItems->fetchAll();
 
 	return	$items;
 }
 
+
+/*
+** Get All Item  Function 1.0 
+** Function To Get Categories From Datebase 
+*/
+function getalldate($table,$where, $value) {
+	global $con;
+	$getItems = $con->prepare("SELECT * FROM $table WHERE $where = ?  ORDER BY Item_Id DESC");
+	$getItems->execute(array($value));
+	$items = $getItems->fetchAll();
+
+	return	$items;
+}
 
 
 

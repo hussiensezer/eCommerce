@@ -530,7 +530,7 @@ if(isset($_SESSION['Username'])) {
 	include $tpl . 'footer_inc.php';
 }else {
 	
-	header('Location:index.php');
+	header('refresh: 5,Location:index.php');
 	exit();
 	
 }

@@ -1,12 +1,14 @@
 <?php include "init.php"; 
 $pageTitle = 'Categories'; 
-$items = getItems($_GET['catid']);
+$catname =  isset($_GET['name'])? $_GET['name']: "";
+$catid =  isset($_GET['catid'])? $_GET['catid']: "";
+$items = getItems('Cat_ID',$catid);
 	if(!empty($items)){
 ?>
 
 
 <div class="container">
-	<h1 class='text-center pad'><?php echo  str_replace(['-','_'], [' ', '&'], $_GET['name']);?></h1>
+	<h1 class='text-center pad'><?php echo  str_replace(['-','_'], [' ', '&'], $catname);?></h1>
 	<div class="row">
 		
 		<?php 

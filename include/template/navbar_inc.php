@@ -1,5 +1,36 @@
+<?php
+
+
+?>
 <div class='upper-bar'>
-	UpperBar
+	<div class="container">
+		
+	<?php
+		if(isset($_SESSION['user'])){
+				echo '<a href="logout.php" class="float-right" >
+					<span >LogOut</span>
+				</a>';
+				$userStatus =  checkUserStatus($_SESSION['user']);
+				echo "<a href='profile.php'>My Profile</a>";
+			
+			
+			
+			
+				if($userStatus == 1) {
+				//echo "Your MemberShip Need To Actived By Admin";
+				}else {
+				//	echo "You Are Actived You Can Shop Your needed";
+				}
+
+			}else {
+			echo '<a href="login.php" class="ml-auto" >
+					<span >Login/Signup</span>
+				</a>';
+			}
+				
+	
+	?>
+	
 </div>
 <nav class="navbar navbar-expand-md navbar-dark bg-dark">
 	<div class="container">
@@ -26,20 +57,7 @@
 		
 
 	 </ul>
-   		<ul class="navbar-nav ml-auto">
-	  	      <li class="nav-item dropdown ">
-        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          
-        </a>
-        <div class="dropdown-menu  " aria-labelledby="navbarDropdown">
-          <a class="dropdown-item" href="members.php?action=Edit&id="><?php echo lang('EDIT');?></a>
-          <a class="dropdown-item" href="#"><?php echo lang('SETTING');?></a>
-          <div class="dropdown-divider"></div>
-          <a class="dropdown-item" href="logout.php"><?php echo lang('OUT');?></a>
-        </div>
-      </li>
-	  	
-	  </ul>
+
   </div>
 	</div>
 </nav>

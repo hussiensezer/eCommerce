@@ -1,20 +1,14 @@
 $(function(){
 	'use strict';
 	
-	
-	// DashBoard 
-	
-	$('.toggel-info').click(function(){
+	$('.form h1 span').click(function(){
+		$(this).addClass('active').siblings().removeClass('active');
 		
-		$(this).toggleClass('selected').parent().next('.card-body').fadeToggle(100);
+		$('.form form').hide();
 		
-		if($(this).hasClass('selected')) {
-			$(this).html('<i class="fas fa-plus fa-lg"></i>');
-		}else {
-			$(this).html('<i class="fas fa-minus fa-lg"></i>');
-		}
-		
+		$('.' + $(this).data('class')).fadeIn(100);
 	});
+
 	
 	
 	//Hide PlaceHolder On Form Fouces
@@ -55,4 +49,6 @@ $('input').each(function(){
 		
 		return confirm('Are You Sure To Delete ');
 	});
+
 });
+

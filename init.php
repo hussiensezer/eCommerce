@@ -1,6 +1,12 @@
 <?php
 	include 'admins/connection.php';
 
+
+    $sessionUser = '';
+    if(isset($_SESSION['user'])){
+        $sessionUser =  $_SESSION['user'];
+    }
+
 	//Routes
 	
 	$tpl = 'include/template/';  // Template Directory
