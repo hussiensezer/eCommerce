@@ -5,7 +5,7 @@ include "init.php";
 if(isset($_SESSION['user'])) {
     
  $getUserInfo = $con->prepare("SELECT * FROM users WHERE Username = ?");
- $getUserInfo->execute(array($sessionUser));
+ $getUserInfo->execute(array($_SESSION['user']));
  $info = $getUserInfo->fetch();
 // To fetch The Items
  $getitems = getalldate('items','Member_ID',$info['UserId'] );
@@ -41,13 +41,15 @@ $getComments = getalldate('comments','user_id', $info['UserId']);
 			
 			
 		?>
-		<div class="col-md-3 mb-3">
-			<div class="card" style="">
+		<div class="col-md-3 mb-3" id="my-item">
+			<div class="card item-profile" style="">
 				<img src="default.svg" class="card-img-top" alt="Product">
 			  <div class="card-body">
-				<h5 class="card-title"><?php echo $item['Name'] ?></h5>
+              <?php if($item['Approve'] == 0) {echo "<span class='alert alert-warning'>Under Check</span>";} ?>
+				<h5 class="card-title"><a href="item.php?id=<?php echo $item['Item_Id']?>"><?php echo $item['Name'] ?></a></h5>
 				<h6 class="card-subtitle mb-2 text-muted"><?php echo $item['Price'] ?></h6>
 				<p class="card-text"><?php echo $item['Description'] ?></p>
+				<p class="card-text"><?php echo $item['Add_Date'] ?></p>
 				<a href="#" class="card-link">Card link</a>
 				<a href="#" class="card-link">Another link</a>
 			  </div>
@@ -55,7 +57,8 @@ $getComments = getalldate('comments','user_id', $info['UserId']);
 		</div>
 		<?php }
             }else {
-                echo "<p class='alert alert-warning'>Sorry You Don't Have Any Item's</p>";
+                echo "<p class='alert alert-warning'>Sorry You Don't Have Any Item's  <a href='newad.php'> New Ads!!</a> </p>";
+         
             }
    ?>
 		</div>

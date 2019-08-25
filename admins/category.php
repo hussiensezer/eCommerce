@@ -19,7 +19,7 @@ if(isset($_SESSION['Username'])) {
 			$sort = $_GET['sort'];
 		}
 		
-		$stmt = $con->prepare("SELECT * FROM categories ORDER BY Ordering {$sort}");
+		$stmt = $con->prepare("SELECT * FROM categories WHERE parent = 0 ORDER BY Ordering {$sort}");
 		$stmt->execute();
 		
 		$cats = $stmt->fetchAll();
@@ -91,8 +91,26 @@ if(isset($_SESSION['Username'])) {
 						
 						
 						echo "</div>";
+                         // Sub Category From Categories
+                        	$categories = getAll('*','categories', "WHERE parent = {$cat['ID']}", '','ID', 'ASC');
+                        if(!empty($categories)){
+                            echo "<h4 class='text-info  ml-3'>" . "Child Category" . "</h4>";
+                            foreach($categories as $c) {
+
+                                echo '<ul class="sub-cat">';
+                                        echo "<li class='child child-link'><a href='category.php?action=Edit&catid={$c['ID']}'> {$c['Name']} </a>";
+                                        echo "<a href='category.php?action=Delete&catid={$c['ID']}' class=' confirm ml-2 text-danger show-delete'> 
+									           Delete 
+									           </a>";
+                                        
+                                        echo "</li>";
+                                echo '</ul>';
+                            }
+                        }
 						echo "<hr>";
 					}
+                       
+                    
 				?>
 			  </div>
 			</div>
@@ -150,6 +168,21 @@ if(isset($_SESSION['Username'])) {
 					   placeholder="Number To Arrange The Categories" >
 				<i class="fas fa-list-ol fa-fw"></i>
 				
+			</div>	
+            <div class="form-group">
+                <label>Parent?</label>
+                <select name="parent" class="form-control">
+                    <option value="0">None</option>
+                    <?php
+                    $cats = getAll("*","categories","WHERE parent = 0","",'ID');
+                        foreach($cats as $cat){
+                            echo "<option value='{$cat['ID']}'>";
+                                echo "{$cat['Name']}";
+                            echo"</option>";
+                        }
+                    ?>
+                </select>
+
 			</div>
 			
 			<div class="form-group">
@@ -226,6 +259,7 @@ if(isset($_SESSION['Username'])) {
 				$name = $_POST['name'];
 				$desc = $_POST['description'];
 				$order = $_POST['ordering'];
+                $parent = $_POST['parent'];
 				$visb = $_POST['visibility'];
 				$comment = $_POST['comment'];
 				$ads = $_POST['ads'];
@@ -260,12 +294,16 @@ if(isset($_SESSION['Username'])) {
 					if($check == 0) {
 					//Insert The info of Category in data DataBase 
 					$stmt = $con->prepare("INSERT INTO
-										   categories(Name, Description, Ordering, Visibility, Allow_Comment, Allow_Ads)	
-											VALUES(:zname, :zdescription, :zordering, :zvisibility,:zComment,:zAds)");
+										   categories(Name, Description, Ordering,
+                                           parent,Visibility, Allow_Comment, Allow_Ads)	
+											VALUES(:zname, :zdescription, :zordering,
+                                            :zparent,
+                                            :zvisibility,:zComment,:zAds)");
 					$stmt->execute(array(
 						'zname' => $name,
 						'zdescription' => $desc,
 						'zordering'=> $order,
+                        'zparent'=> $parent,
 						'zvisibility' => $visb,
 						'zComment' => $comment,
 						'zAds' => $ads
@@ -363,7 +401,23 @@ if(isset($_SESSION['Username'])) {
 				<i class="fas fa-list-ol fa-fw"></i>
 				
 			</div>
-			
+            <div class="form-group">
+                <label>Parent?</label>
+                <select name="parent" class="form-control">
+                    <option value="0">None</option>
+                    <?php
+                    $cats = getAll("*","categories","WHERE parent = 0","",'ID');
+                        foreach($cats as $c){ ?>
+                            <option value='<?php echo $c['ID'] ?>'
+                            <?php if($c['ID'] == $cat['parent']){echo 'selected';}?> >
+                               <?php echo $c['Name']; ?>
+                           </option>
+                    <?php
+                        }
+                    ?>
+                </select>
+
+			</div>
 			<div class="form-group">
 				<label class='control-label'> <b>Visible</b> </label>
 				<div class="col-sm-10 col-md-6 ">
@@ -447,6 +501,7 @@ if(isset($_SESSION['Username'])) {
 				$name = $_POST['name'];
 				$desc = $_POST['description'];
 				$ordering = $_POST['ordering'];
+                $parent = $_POST['parent'];
 				$visible = $_POST['visibility'];
 				$commenting = $_POST['comment'];
 				$ads = $_POST['ads'];
@@ -475,9 +530,9 @@ if(isset($_SESSION['Username'])) {
 				if(empty($formErrors)) {
 					//Update The DataBase With This Info
 					
-					$stmt = $con->prepare("UPDATE categories SET Name = ?, Description = ?, Ordering = ?, Visibility = ?, Allow_Comment = ?, Allow_Ads = ? WHERE ID = ?");
+					$stmt = $con->prepare("UPDATE categories SET Name = ?, Description = ?, Ordering = ?, parent = ?,Visibility = ?, Allow_Comment = ?, Allow_Ads = ? WHERE ID = ?");
 					
-					$stmt->execute(array($name, $desc, $ordering, $visible, $commenting, $ads, $catid));
+					$stmt->execute(array($name, $desc, $ordering,$parent,$visible, $commenting, $ads, $catid));
 					
 					// Echo Success Message
 					$theMsg =  "<div class='alert alert-success'>" . $stmt->rowCount() . ' Record Updated</div>';

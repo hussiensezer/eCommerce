@@ -3,19 +3,19 @@ session_start();
 include "init.php"; 
 $pageTitle = 'Categories'; 
 
-$catid =  isset($_GET['catid']) && is_numeric($_GET['catid'])? intval($_GET['catid']): 0;
+$tagName =  isset($_GET['name']) ? ($_GET['name']) : 0;
 
-$getItems = getAll('*','items',"WHERE Cat_ID ={$catid}",'AND Approve = 1','Item_Id');
-	if(!empty($getItems)){
+$getTags = getAll('*','items',"WHERE tags LIKE '%{$tagName}%' ",'AND Approve = 1','Item_Id');
+	if(!empty($getTags)){
 ?>
 
 
 <div class="container">
-	<h1 class='text-center pad'>Show Categories</h1>
+	<h1 class='text-center pad'><?php echo $tagName ;?></h1>
 	<div class="row">
 		
 		<?php 
-			foreach($getItems as $item) {
+			foreach($getTags as $item) {
 			
 			
 		?>

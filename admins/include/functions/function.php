@@ -1,5 +1,23 @@
 <?php
 
+/*
+** Get all Function 2.0 
+** Function To Get all From Datebase 
+*/
+function getAll($field,$table, $where = null, $and = NULL,$orderfield, $ordering = 'DESC') {
+	global $con;
+    
+
+	$getAll = $con->prepare("SELECT $field FROM $table $where  $and ORDER BY $orderfield $ordering");
+	$getAll->execute();
+	$all = $getAll->fetchAll();
+
+	return	$all;
+}
+
+
+
+
 	/* 
 	**getTitle v.1
 	** Title Function That Echo The Page Title In Case The Page

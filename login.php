@@ -18,7 +18,7 @@ include 'init.php';
 	// Check If The User Exist In DataBase
 
 		$stmt = $con->prepare("SELECT
-									 Username, Password
+								UserId, Username, Password
 								FROM 
 									users
 								WHERE
@@ -33,44 +33,87 @@ include 'init.php';
 		if($count > 0) {
 			$_SESSION['user'] = $username; // Register Session Name
 			$_SESSION['id'] = $row['UserId']; // Register Session ID
-			header('location: index.php');// Redirect To home Page
+		    header('location: index.php');// Redirect To home Page
 			exit();
 		  }    // If i Come From SignUp Form
         }elseif(isset($_POST['signup'])) {  
             
             $formErrors = [];
+            $name = $_POST['name'];
+            $pass = $_POST['password'];
+            $pass2 = $_POST['password2'];
+            $email = $_POST['email'];
             
             // Validate For Name
-            if(isset($_POST['name'])){
+            if(isset($name)){
                 
-                $filterUser = filter_var($_POST['name'],FILTER_SANITIZE_STRING);
+                $filterUser = filter_var($name,FILTER_SANITIZE_STRING);
                 
                 if(strlen($filterUser) < 2) {
                         $formErrors[] = "Username Field Must Be More Then 2 Characters";
                 }
             }
            // Validate For Password
-            if(isset($_POST['password']) && isset($_POST['password2'])) {
-                if(empty($_POST['password'])){
+            if(isset($pass) && isset($pass2)) {
+                if(empty($pass)){
                     $formErrors[] = "The Password Field Can't Be Empty";
                 }
                 
-                $pass1 = sha1($_POST['password']);
-                $pass2 = sha1($_POST['password2']);
+                $password1 = sha1($pass);
+                $password2 = sha1($pass2);
                 
-                if($pass1 !== $pass2) {
+                if($password1 !== $password2) {
                     
                     $formErrors[] = "The Password Field Not Matched With Other Type It Again";
                 }
             }
            // Validate For Email
-            if(isset($_POST['email'])) {
-                $filterEmail = filter_var($_POST['email'],FILTER_SANITIZE_EMAIL);
+            if(isset($email)) {
+                $filterEmail = filter_var($email,FILTER_SANITIZE_EMAIL);
                 if(filter_var($filterEmail, FILTER_VALIDATE_EMAIL) != true){
                     $formErrors[] = "This Not A Valid Email";
                 }
     
             }
+            
+            	//Check If There's No Errors In fomErrors Proceed The Insert Operation
+				if(empty($formErrors)) {
+					// Check If User Are Exist
+					
+					$check = checkItem('Username', 'users',$name);
+					
+					if($check == 0) {
+					//Insert The info of user in data DataBase 
+					$stmt = $con->prepare("INSERT INTO
+										   users(Username,
+                                                Password,
+                                                Email,
+                                                RegStatus,
+                                                date)	
+											VALUES(
+                                                :zuser,
+                                                :zpass, 
+                                                :zemail,
+                                                0,
+                                                now()) ");
+					$stmt->execute(array(
+						'zuser' => $name,
+						'zpass' => $password1,
+						'zemail'=> $email,
+						
+					));
+				
+					
+					// Echo Success Message
+					echo $theMsg =  "<div class='alert alert-success'> Congraitlion </div>"; 
+					
+					} else {
+					$formErrors[] = "This Username Already Exist Try Other One";
+					
+
+
+					}
+                }
             
         }else {
             echo 'You Trying To Do Somthing Bad Take Care';

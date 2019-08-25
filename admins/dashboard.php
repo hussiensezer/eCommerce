@@ -6,8 +6,8 @@ include 'init.php';
 /*Start Dashboard Page */
 $latestUser = 5;	
 $latests = getLatest('*','users','UserId',$latestUser, 'GroupId != 1');	
-$latestsItems = getLatest('*','items','Item_Id',$latestUser);	
-$latestscomments = getLatest('*','comments','c_id',$latestUser);
+$latestsItems = getLatest('*','items','Item_Id');	
+$latestscomments = getLatest('*','comments','c_id');
 	
 	
 $stmt = $con->prepare("SELECT

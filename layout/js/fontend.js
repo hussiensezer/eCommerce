@@ -49,6 +49,21 @@ $('input').each(function(){
 		
 		return confirm('Are You Sure To Delete ');
 	});
-
+    
+//
+    $('.live-name').keyup(function(){
+        $('.live-preview h5').text($(this).val());
+    });
+    
+   $('.live-desc').keyup(function(){
+    $('.live-preview .desc').text($(this).val());
+    });
+    
+   $('.live-price').keyup(function(){
+    $('.live-preview .price').text('$' + $(this).val());
+    });
+    
+  
+    
 });
 

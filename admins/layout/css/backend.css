@@ -202,7 +202,12 @@ tbody.members {
 	padding: 3px 3px;
 }
 
-
+.main-table td img {
+    width:60px;
+    border:1px solid #eee;
+    padding:2px;
+    border-radius: 50%;
+}
 
 
 
@@ -319,6 +324,16 @@ h1 {
 .categories .cat a {
 	margin-right:5px;
 }
-
+.sub-cat .child {
+    list-style:none;
+   margin:0;
+}
+.sub-cat .child::before{
+    content: '- ';
+    font-weight: bold;
+}
+.sub-cat .show-delete{
+    display:none;
+}
 /*End Add Part */
 /************ End Category Page ************/

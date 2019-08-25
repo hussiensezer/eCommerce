@@ -1,6 +1,22 @@
 <?php
 
 /*
+** Get all Function 2.0 
+** Function To Get all From Datebase 
+*/
+function getAll($field,$table, $where = null, $and = NULL,$orderfield, $ordering = 'DESC') {
+	global $con;
+    
+
+	$getAll = $con->prepare("SELECT $field FROM $table $where  $and ORDER BY $orderfield $ordering");
+	$getAll->execute();
+	$all = $getAll->fetchAll();
+
+	return	$all;
+}
+
+
+/*
 ** Get Categories Function 1.0 
 ** Function To Get Categories From Datebase 
 */
@@ -39,9 +55,15 @@ function checkUserStatus($user){
 ** Get  Items The Approved Item Only Function 1.0 
 ** Function To Get Categories From Datebase 
 */
-function getItems($where, $value) {
+function getItems($where, $value, $approve = NULL) {
 	global $con;
-	$getItems = $con->prepare("SELECT * FROM items WHERE $where = ? AND Approve = 1 ORDER BY Item_Id DESC");
+    
+    if($approve == NULL) {
+        $sql = 'AND Approve = 1';
+    }else {
+        $sql = NULL;
+    }
+	$getItems = $con->prepare("SELECT * FROM items WHERE $where = ? $sql ORDER BY Item_Id DESC");
 	$getItems->execute(array($value));
 	$items = $getItems->fetchAll();
 

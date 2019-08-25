@@ -178,10 +178,9 @@ if(isset($_SESSION['Username'])) {
 					<select name="member"  class="form-control">
 						<option value='0' disabled selected>Who</option>
 						<?php
-							$stmt = $con->prepare("SELECT * FROM users WHERE GroupId = 1");
-							$stmt->execute();
-							$users = $stmt->fetchAll();
-							foreach($users as $user) {
+                            $allUsers = getAll("*","users", "WHERE GroupId = 1","", "UserId");
+							
+							foreach($allUsers as $user) {
 								
 								echo "<option value='{$user['UserId']}'> {$user['Username']}</option>";
 							}
@@ -192,18 +191,30 @@ if(isset($_SESSION['Username'])) {
 			<!-- Start Of Category -->
 			<div class="form-group">
 					<select name="category"  class="form-control">
-						<option value='0' disabled selected>Category</option>
+						<option disabled selected>Category</option>
 						<?php
-							$stmt = $con->prepare("SELECT * FROM categories");
-							$stmt->execute();
-							$cats = $stmt->fetchAll();
-							foreach($cats as $cat) {
-								
+                            $allcats = getAll("*","categories","WHERE parent = 0", '','ID'); 
+							foreach($allcats as $cat) {
 								echo "<option value='{$cat['ID']}'> {$cat['Name']}</option>";
+                            $childCats = getAll("*","categories","WHERE parent = {$cat['ID']}", '','ID');
+                                foreach($childCats as $child) {
+								echo "<option value='{$child['ID']}' class='text-danger'> {$cat['Name']} -->{$child['Name']}</option>";
+                                    
+                                }
 							}
 						?>
 					</select>
 			</div>
+            
+        <!-- Start Of Tags -->
+			<div class="form-group">
+				<input type="text"
+					   class=" form-control"
+					   name="tags" 
+					   placeholder="Separate Tags With Comma {,}">
+				<i class="fas fa-tags"></i>	
+			</div>
+        <!-- End Of Tags -->
 			<!-- End Of Category -->
 			
 			<div class="form-group">
@@ -236,6 +247,7 @@ if(isset($_SESSION['Username'])) {
 				$time = date('Y-m-d h:i:s A'); // Change From DataBase To GET Full of Date
 				$member = $_POST['member'];
 				$cat = $_POST['category'];
+				$tags = $_POST['tags'];
 				
 			
 				// Validate The Form
@@ -265,8 +277,8 @@ if(isset($_SESSION['Username'])) {
 				
 					//Insert The info of user in data DataBase 
 					$stmt = $con->prepare("INSERT INTO
-										   items(Name, Description, Price, Country_Made, Status, Add_Date,Cat_ID, Member_ID)	
-											VALUES(:zname, :zdescription, :zprice, :zcountry,:zstatus,:ztime, :zcat,:zmember ) ");
+										   items(Name, Description, Price, Country_Made, Status, Add_Date,Cat_ID, Member_ID,tags)	
+											VALUES(:zname, :zdescription, :zprice, :zcountry,:zstatus,:ztime, :zcat,:zmember,:ztags ) ");
 					$stmt->execute(array(
 						'zname' 		=> $name,
 						'zdescription'  => $desc,
@@ -275,7 +287,8 @@ if(isset($_SESSION['Username'])) {
 						'zstatus' 		=> $status,
 						'ztime'			=> $time,
 						'zcat'			=> $cat,
-						'zmember'		=> $member
+						'zmember'		=> $member,
+						'ztags'   		=> $tags
 					));
 				
 					
@@ -429,7 +442,16 @@ if(isset($_SESSION['Username'])) {
 					</select>
 			</div>
 			<!-- End Of Category -->
-			
+            <!-- Start Of Tags -->
+            <div class="form-group">
+				<input type="text"
+					   class=" form-control"
+					   name="tags" 
+					   placeholder="Separate Tags With Comma {,}"
+                       value=' <?php echo $item['tags'];?>'>
+				<i class="fas fa-tags"></i>	
+			</div>
+			<!-- End Of Tags -->
 			<div class="form-group">
 				<input type="submit" class="btn btn-primary " value="Save Item">
 				<i class="fas fa-paper-plane fa-fw"></i>
@@ -530,6 +552,7 @@ if(isset($_SESSION['Username'])) {
 				$status 	 = $_POST['status'];
 				$category 	 = $_POST['category'];
 				$member 	 = $_POST['member'];
+				$tags 	     = $_POST['tags'];
 				
 				// Validate The Form
 				
@@ -554,9 +577,9 @@ if(isset($_SESSION['Username'])) {
 				if(empty($formErrors)) {
 					//Update The DataBase With This Info
 					
-					$stmt = $con->prepare("UPDATE items SET Name = ?, Description = ?, Price = ?, Country_Made = ?, Status = ?, Cat_ID = ?, Member_ID = ?  WHERE Item_Id = ?");
+					$stmt = $con->prepare("UPDATE items SET Name = ?, Description = ?, Price = ?, Country_Made = ?, Status = ?, Cat_ID = ?, Member_ID = ? , tags = ? WHERE Item_Id = ?");
 					
-					$stmt->execute(array($name, $desc, $price, $country, $status, $category,$member ,$id));
+					$stmt->execute(array($name, $desc, $price, $country, $status, $category,$member , $tags,$id));
 					
 					// Echo Success Message
 					$theMsg =  "<div class='alert alert-success'>" . $stmt->rowCount() . ' Record Updated</div>';

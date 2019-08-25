@@ -14,7 +14,7 @@ TrustStatus INT(11) DEFAULT 0, /*If The Saller Are good And trusted i can give h
 RegStatus INT(11) DEFAULT 0, /*User Approved */
 date DATE NOT NULL /* Date The Time User Register */
 );
-
+ALTER TABLE `users` ADD `avatar` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL AFTER `date`;
 CREATE TABLE categories(
 ID INT(11) UNSIGNED PRIMARY KEY AUTO_INCREMENT,
 Name VARCHAR(255) UNIQUE NOT NULL,
@@ -23,6 +23,7 @@ Ordering INT(11) NOT NULL,
 Visibility TINYINT DEFAULT 0,
 Allow_Comment TINYINT DEFAULT 0,
 Allow_Ads TINYINT DEFAULT 0
+ALTER TABLE `categories` ADD `parent` INT(10) NOT NULL AFTER `Ordering`;
 );
 
 CREATE TABLE items (
@@ -40,8 +41,9 @@ Cat_ID INT(11) UNSIGNED,
 FOREIGN KEY (Cat_ID) REFERENCES categories (ID) ON DELETE CASCADE ON UPDATE CASCADE,
 Member_ID INT(11) UNSIGNED,
 FOREIGN KEY (Member_ID) REFERENCES users (UserId) ON DELETE CASCADE ON UPDATE CASCADE
-
 )
+ALTER TABLE `items` ADD `tags` VARCHAR(255) NOT NULL AFTER `Member_ID`;
+
 CREATE TABLE comments (
 c_id INT(11) UNSIGNED PRIMARY KEY AUTO_INCREMENT,
 comment TEXT,

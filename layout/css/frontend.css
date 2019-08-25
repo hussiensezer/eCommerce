@@ -1,6 +1,7 @@
 /*Start Main Rulez */
 body {
 	background-color:#F4F4F4;
+    height:3000px;
 }
 .nice-message {
 	background-color:#FFF;
@@ -23,7 +24,14 @@ h1 {
 }
 /*End Main Rulez */
 
-/* Start NavBar*/
+/* Start NavBar And Upperbar*/
+
+.user_avatar {
+    width:40px;
+    border:1px solid #FFF;
+    border-radius: 50%;
+    padding:2px;
+}
 .navbar {
 	padding:0
 }
@@ -104,3 +112,48 @@ h1 {
     margin:10px auto;
 }
 /* End Login Page */
+
+/* Start New Ad Page */
+.newad .newad-form .form-group {
+      position: relative ;
+          width: 60%;
+}
+.newad .newad-form input{
+       padding: 5px 26px;
+}
+.newad .newad-form input[type="submit"] ~ i {
+    color:white
+}
+.newad .newad-form .form-group i {
+    position: absolute;
+    top:11px;
+    left:5px;
+    
+}
+/* End New Ad Page */
+
+/* Start Item Page */
+.avatar {
+    margin-top:20px;
+}
+.avatar img{
+    width:80%;
+}
+.box {
+   margin-top:40px;
+    width:80%;
+    background-color:#bbb;
+    color:white;
+    padding:15px;
+    border-radius: 10px;
+}
+/* End Item Page */
+
+
+/* Start Profile*/
+.item-profile span {
+    
+    padding:5px;
+}
+
+/* End Profile */

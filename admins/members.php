@@ -50,6 +50,7 @@ session_start();
 					<tr>
 						<th>#ID</th>
 						<th>Username</th>
+						<th>Avatar</th>
 						<th>Email</th>
 						<th>Fullname</th>
 						<th>Registerd Date</th>
@@ -62,6 +63,18 @@ session_start();
 							echo '<tr>';
 								echo "<td>{$member['UserId']} </td>";
 								echo "<td>{$member['Username']} </td>";
+                            
+								echo "<td>";
+                                 
+                                        if(!empty($member['avatar'])){
+                                            echo "<img src='uploads/avatars/{$member['avatar']}'>";
+                                        }else{
+                                           echo "<img src='uploads/avatars/default_avatar.png'>";
+                                        }
+                                       
+                                echo"</td>";
+                            
+                            
 								echo "<td>{$member['Email']} </td>";
 								echo "<td>{$member['FullName']} </td>";
 								echo "<td>{$member['date']}</td>";
@@ -100,7 +113,7 @@ session_start();
 	<div class="container member">
 		<h1 class="text-center mt-3">Add Member </h1>
 	
-		<form class="contact-form" action="?action=Insert" method="POST">
+		<form class="contact-form" action="?action=Insert" method="POST" enctype="multipart/form-data">
 	
 			<div class="form-group">
 				<input type="text"
@@ -148,7 +161,13 @@ session_start();
 					   autocomplete="off"
 					   required="required" >
 				<i class="fas fa-signature fa-fw"></i>
-			</div>
+			</div>	
+            <div class="input-group mb-3">
+              <div class="custom-file">
+                <input type="file" name="avatar" class="form-control">
+             
+              </div>
+            </div>
 			<div class="form-group">
 				<input type="submit" class="btn btn-primary " value="Add Member">
 				<i class="fas fa-paper-plane fa-fw"></i>
@@ -173,6 +192,23 @@ session_start();
 			
 			echo "<div class='container member'>";
 			echo '<h1 class="text-center mt-3">Add New Member </h1>' ;
+                
+                //Upload Variables
+                $avatar = $_FILES['avatar'];
+                
+                $avatarName = $_FILES['avatar']['name'];
+                $avatarSize = $_FILES['avatar']['size'];
+                $avatarTmp  = $_FILES['avatar']['tmp_name'];
+                $avatarType = $_FILES['avatar']['type'];
+                
+                //List of Allowed File Typed To Upload
+                
+                $avatarAllowedExtension = array("jpeg","jpg","png", "gif");   
+            
+                $avatarExtension = strtolower( end (explode(".",$avatarName) ) );
+                
+
+            
 				//Get Variables From The Form
 				$name = $_POST['username'];
 				$pass = $_POST['password'];
@@ -199,13 +235,28 @@ session_start();
 					$formErrors[] = "Full Name Can't Be <b>Empty</b>";
 				}
 
-				
+                if(!empty($avatarName) &&! in_array($avatarExtension, $avatarAllowedExtension)) {
+                   $formErrors[] = "This Extension Not  <b>Allowed</b>";
+                }
+                if(empty($avatarName)) {
+                   $formErrors[] = "Avatar Is <b> Required</b>";
+                }
+                  if($avatarSize > 4194304) {
+                   $formErrors[] = "Avatar Can't Be Larger Then <b> 4MB</b>";
+                }
+                
+                
 				foreach($formErrors  as $error) {
 					echo "<div class='alert alert-danger'>" . $error . "</div>";
 				}
 				
 				//Check If There's No Errors In fomErrors Proceed The Insert Operation
 				if(empty($formErrors)) {
+                    
+                    $avatar = rand(0, 1000000) . '_' . $avatarName;
+                    move_uploaded_file($avatarTmp, 'uploads\avatars\\' .$avatar );
+                    
+                   
 					// Check If User Are Exist
 					
 					$check = checkItem('Username', 'users', $name);
@@ -213,13 +264,14 @@ session_start();
 					if($check == 0) {
 					//Insert The info of user in data DataBase 
 					$stmt = $con->prepare("INSERT INTO
-										   users(Username, Password, Email, FullName,RegStatus,date)	
-											VALUES(:zuser, :zpass, :zemail, :zname,1,now()) ");
+										   users(Username, Password, Email, FullName,RegStatus,date,avatar)	
+											VALUES(:zuser, :zpass, :zemail, :zname,1,now(),:zavatar )");
 					$stmt->execute(array(
 						'zuser' => $name,
 						'zpass' => $hashPass,
 						'zemail'=> $email,
-						'zname' => $full
+						'zname' => $full,
+                        'zavatar' => $avatar
 					));
 				
 					
@@ -232,6 +284,7 @@ session_start();
 
 
 					}
+                
 				}
 				echo "</div>";
 
